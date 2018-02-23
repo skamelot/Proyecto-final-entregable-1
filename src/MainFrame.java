@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
 				JFileChooser selector = new JFileChooser(); //Archivo a cargar
 		        FileNameExtensionFilter filtro = new FileNameExtensionFilter(".txt", "txt", "text"); //Archivos para buscar: "Muestra nombre en la ventana" , "extensión sin punto", "tipo de archivo"
 		        selector.setFileFilter(filtro); //Le decimos al selector de archivo que sólo busque .txt
-		        selector.setAcceptAllFileFilterUsed(false);//Determina si puede mostrar todos los archivos en el selector o solo el filtro que se indique
+		        selector.setAcceptAllFileFilterUsed(false);//Determina si puede aparecer la opción "Todos los archivos" en el selector o solo el filtro que se indique. Con false solo muestra el filtro
 		        int archivo = selector.showOpenDialog(null); //Archivo elegido, int porque las comparaciones de Java son con int, es decir: Cancelar puede ser -1, un archivo elegido es número entero, etc
 		        if(archivo == JFileChooser.APPROVE_OPTION) { //En este caso APPROVE_OPTION vale 0; también este if valida que sea un .txt
 		        	//selector tiene opciones útiles para manipular con getSelectedFile
