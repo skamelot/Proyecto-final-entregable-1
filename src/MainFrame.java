@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -48,8 +49,13 @@ public class MainFrame extends JFrame {
 		            txtRutaMapa.setText(selector.getSelectedFile().getPath());
 		            Archivos arch = new Archivos();
 		            try {
-						arch.leerArchivo(selector.getSelectedFile().getPath()); 
-						//Aquí se manipularía del 1.2 en adelante
+						if( arch.leerArchivo(selector.getSelectedFile().getPath())  ) {
+							System.out.println(arch.getTerrenos());
+							//Aquí se manipularía del 1.2 en adelante
+						}
+						else 
+							JOptionPane.showMessageDialog(getRootPane(), arch.getError());
+						
 					} catch (IOException e) { e.printStackTrace(); }
 		        }
 			}
