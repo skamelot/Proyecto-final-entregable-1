@@ -2,6 +2,8 @@
 public class Mapas {
 	private int filas;
 	private int columnas;
+	private String terrenosNombres[];
+	private String terrenosID[];
 	private String mapaVisual[][];
 	private int mapaVisitas[][];
 	
@@ -10,10 +12,13 @@ public class Mapas {
 		columnas = c;
 		mapaVisual = null;
 		mapaVisitas = null;
+		terrenosNombres = null;
+		terrenosID = null;
 	}
 	
 	public int getFilas() { return filas; }
 	public int getColumnas() { return columnas; }
+	public String[] getTerrenosID() {return terrenosID; }
 	
 	public void crearMapas(String terrenos) {
 		mapaVisual = new String[filas][columnas];
@@ -32,5 +37,15 @@ public class Mapas {
 		for(int f=0; f<filas; f++)
 			for(int c=0; c<columnas; c++)
 				mapaVisitas[f][c] = 0;
+		
+		//Buscamos cuántos terrenos existen y su ID
+		String auxTerrenos = "";
+		for(int i = 0; i<aux.length; i++) {
+			if(!auxTerrenos.contains(aux[i]))
+				auxTerrenos += aux[i] + ",";
+		}
+		
+		aux = auxTerrenos.split(",");
+		terrenosID = aux;
 	}
 }

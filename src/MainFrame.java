@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,6 +32,10 @@ public class MainFrame extends JFrame {
 	private JTextField txtColumnas;
 	
 	private JButton btnCargarMapa;
+	private Mapas manejadorMapas;
+	private JScrollPane panelTerrenos;
+	private JTable tablaTerrenos;
+	private Tablas modeloTabla;
 
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
@@ -64,12 +70,16 @@ public class MainFrame extends JFrame {
 		            try {
 						if( arch.leerArchivo(selector.getSelectedFile().getPath())  ) {
 							
-							Mapas manejadorMapas = new Mapas(arch.getFilas(), arch.getColumnas());
+							//Lectura de archivo y creación del contenido del mapa
+							manejadorMapas = new Mapas(arch.getFilas(), arch.getColumnas());
 							manejadorMapas.crearMapas(arch.getTerrenos());
 							txtFilas.setText(String.valueOf(manejadorMapas.getFilas()));
 							txtColumnas.setText(String.valueOf(manejadorMapas.getColumnas()));
-							
-							//Aquí se manipularía del punto 1.2 en adelante
+							//Mostrando tabla de ID terrenos
+							tablaTerrenos = modeloTabla.actualizarTabla("Terrenos", manejadorMapas.getTerrenosID());
+							tablaTerrenos.setEnabled(true);
+							//Aquí se manipularía del punto 
+							//1.2 en adelante
 						}
 						else {
 							JOptionPane.showMessageDialog(getRootPane(), arch.getError());
@@ -124,6 +134,13 @@ public class MainFrame extends JFrame {
 		txtColumnas.setBounds(258, 84, 42, 20);
 		contentPane.add(txtColumnas);
 		txtColumnas.setColumns(10);
+		
+		modeloTabla = new Tablas("Terrenos");
+		tablaTerrenos = modeloTabla.muestraTabla();
+		tablaTerrenos.setEnabled(true);
+		panelTerrenos = new JScrollPane(tablaTerrenos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		panelTerrenos.setBounds(85, 156, 425, 200);
+		contentPane.add(panelTerrenos);
 	}
 
 	public static void main(String[] args) {
