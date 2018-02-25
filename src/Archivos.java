@@ -38,17 +38,29 @@ public class Archivos
 	public boolean leerArchivo(String ruta) throws IOException {
 		try {
 			archivo = new Scanner(new File(ruta));
-		} catch (FileNotFoundException e) { return false; }
+			if(!archivo.hasNextLine()) {
+				errorCarga = true;
+				error = "ERROR:   El mapa seleccionado está completamente vacío.\n\n";
+				return false;
+			}
+		} catch (FileNotFoundException e) { 
+			errorCarga = true;
+			error = "ERROR:   El archivo especificado no existe.\n\n";
+			return false; 
+		}
 		while(archivo.hasNextLine() && archivo!=null)
 		{
 		   linea = archivo.nextLine();
-		   if(!validarInt(linea))
-				   return false;
+		   if(!validarInt(linea)) {
+			   archivo.close();   
+			   return false;
+		   }
 		   filas++;
 		   
 		   if(filas>MAX_MAPA) {
 			   errorCarga = true;
 			   error = "ERROR:   Se excedió el límite de filas para cargar mapa.\n\n";
+			   archivo.close();
 			   return false;
 		   }
 		}
@@ -103,14 +115,24 @@ public class Archivos
 				}
 			}
 			
-			//Esto porque el archivo no termina en ',' entonces no se hace la validación de la línea 51 y no es letra porque 
-			//se hubiera salido en la línea 55
-			terrenos += terreno+",";
-			col++;
+			//Como no hay forma de validar el último caracter dentro del for pregunto si hay algo dentro de la variable terreno
+			//Esto para evitar que el último caracter sea ',' porque recordemos que si es coma, se asigna el valor de terreno a terrenos
+			//Es decir, en la condición de coma (línea 93) no asignamos valor a terreno, sino que lo restauramos a vacío. Es por eso que
+			//Si la línea termina con coma, puede estar vacía
+			if(!terreno.isEmpty()) {
+				terrenos += terreno+",";
+				col++;
+			}else {
+				errorCarga = true;
+				error = "ERROR:   Hay al menos una zona de mapa vacía.\n"
+					  + "                 Por favor verifique la integridad del mapa.\n";
+				return false;
+			}
+			
 			
 			if(columnas == 0)
 				columnas = col;
-			else if (columnas != col) { //Esto porque no puede haber columnas disparejas
+			else if (columnas != col) { //Esto porque no puede haber columnas variables
 				errorCarga = true;
 				error = "ERROR:   El mapa contiene columnas variables, no se pudo generar un mapa correctamente.\n\n";
 				return false;

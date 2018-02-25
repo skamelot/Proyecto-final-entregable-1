@@ -51,6 +51,7 @@ public class MainFrame extends JFrame {
 		            try {
 						if( arch.leerArchivo(selector.getSelectedFile().getPath())  ) {
 							System.out.println(arch.getTerrenos());
+							System.out.println(arch.getFilas());
 							//Aquí se manipularía del 1.2 en adelante
 						}
 						else 
