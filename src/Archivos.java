@@ -3,8 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 public class Archivos 
 {
 	private final static int MAX_MAPA = 15;
@@ -16,7 +14,6 @@ public class Archivos
 	private String error;
 	private String terrenos;
 	private String linea; //Para leer el archivo línea por línea
-	private String mapaMatriz[][]; //Almacenamos todos los números de la matriz
 	
 	
 	Archivos(){
@@ -26,7 +23,6 @@ public class Archivos
 		error = "";
 		terrenos = "";
 		linea = "";
-		mapaMatriz = null;
 	}
 	
 	public boolean getErrorCarga() { return errorCarga; }
@@ -34,6 +30,7 @@ public class Archivos
 	public int getColumnas() { return columnas; }
 	public String getError() { return error; }
 	public String getTerrenos() { return terrenos; }
+	
 		
 	public boolean leerArchivo(String ruta) throws IOException {
 		try {
