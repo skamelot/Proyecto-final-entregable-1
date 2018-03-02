@@ -1,5 +1,9 @@
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.colorchooser.*;
 
 public class Tablas {
 	private final static String []ENCABEZADO_FILAS = new String[] {" ","1","2","3","4", "5", "6", "7", "8", "9","10","11","12","13","14","15"};
@@ -11,7 +15,7 @@ public class Tablas {
 	
 	private JTable tabla;
 	private DefaultTableModel modeloTabla;
-	
+	private Object infoMapa[][];
 	
 	Tablas(String tipoTabla){
 		if(tipoTabla!="Terrenos") {
@@ -20,30 +24,52 @@ public class Tablas {
 				private static final long serialVersionUID = 1L;
 				@Override
 			    public boolean isCellEditable(int row, int column) {
-			    		return false;
-			      }
+					return false;
+				}
 			};
 		}else {
 			modeloTabla = new DefaultTableModel() {
 				private static final long serialVersionUID = 1L;
-				
+				//Con esto la columna ID no puede ser editable pero las demás sí
 				boolean[] editables = new boolean[]{
 	                    true, true, false
 	            };
 	            
 				@Override
 			    public boolean isCellEditable(int row, int column) {
-			    		return editables[column];//Con esto la columna ID no puede ser editable pero las demás sí
+					return editables[column];
 			      }
+				
+				/* Las tablas utilizan esta función para determinar qué mostrar en cada celda. Sin esto no charcha el que salga un botón
+			     * para elegir los colores para cada terreno
+			     */
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				@Override
+				public Class getColumnClass(int c) {
+			        return getValueAt(0, c).getClass();
+			    }
 			};
-			modeloTabla = new DefaultTableModel();
 			modeloTabla.setColumnIdentifiers(ENCABEZADO_SELECCION);
 		}
 		
 		tabla = new JTable(modeloTabla);
 	    tabla.setFillsViewportHeight(true);
 	    tabla.setRowSelectionAllowed(true);
+	    
+	    if(tipoTabla.equals("Terrenos"))
+	    	tabla.setPreferredScrollableViewportSize(new Dimension(425,150));
+	   
+	    //Manipulación de tamaño para las columnas
+		tamColumnas(tipoTabla);
 	}//Fin constructor
+	
+	private void tamColumnas(String tipoTabla) {
+		if(tipoTabla.equals("Terrenos")) {
+		    tabla.getColumnModel().getColumn(0).setPreferredWidth(130);//Color
+		    tabla.getColumnModel().getColumn(1).setPreferredWidth(225);//Nombre
+		    tabla.getColumnModel().getColumn(2).setPreferredWidth(70);//ID
+	    }
+	}
 	
 	private void tablaVacia() {
 		modeloTabla = (DefaultTableModel) tabla.getModel();
@@ -53,17 +79,17 @@ public class Tablas {
 	public JTable tablaIDTerrenos(String[] datos) {
 		tablaVacia();
 		
-		for(int i=0; i<datos.length; i++) {
+		//Cuenta los terrenos hasta que encuentre un espacio vacío en el arreglo de terrenos distintos
+		for(int i=0; i<datos.length; i++) 
 			if(datos[i].equals(" "))
 				break;
 			else
-				modeloTabla.addRow(new Object[]{" ", " ", datos[i]});
-		}
+				modeloTabla.addRow(new Object[]{new Color(0,2,39), " ", datos[i]});
 		
 		return tabla;
 	}
 	
-	public JTable muestraTabla() { //Inventario completo de total o escasos 
+	public JTable muestraTabla() { 
 		return tabla;
 	}
 }

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -80,6 +81,9 @@ public class MainFrame extends JFrame {
 							//Mostrando tabla de ID terrenos
 							tablaTerrenos = modeloTabla.tablaIDTerrenos(manejadorMapas.getTerrenosID());
 							tablaTerrenos.setEnabled(true);
+							//Preparamos el editor y render para los colores de terreno
+					        tablaTerrenos.setDefaultRenderer(Color.class, new ColorRenderer(true));
+					        tablaTerrenos.setDefaultEditor(Color.class, new EditorColores());
 							//Aquí se manipularía del punto 
 							//1.2 en adelante
 						}
