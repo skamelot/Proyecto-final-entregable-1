@@ -46,6 +46,7 @@ public class EditorColores extends AbstractCellEditor implements TableCellEditor
 
         } else { //Si presiona el botón de OK/Aceptar, color actual se vuelve el nuevo color seleccionado
             currentColor = colorChooser.getColor();
+            
         }
     }
 

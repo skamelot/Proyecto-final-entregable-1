@@ -154,6 +154,10 @@ public class MainFrame extends JFrame {
 		panelTerrenos = new JScrollPane(tablaTerrenos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		panelTerrenos.setBounds(85, 156, 425, 150);
 		contentPane.add(panelTerrenos);
+		
+		JButton button = new JButton("");
+		button.setBounds(85, 522, 425, 38);
+		contentPane.add(button);
 	}
 
 	public static void main(String[] args) {

@@ -15,7 +15,7 @@ public class Tablas {
 	
 	private JTable tabla;
 	private DefaultTableModel modeloTabla;
-	private Object infoMapa[][];
+
 	
 	Tablas(String tipoTabla){
 		if(tipoTabla!="Terrenos") {
