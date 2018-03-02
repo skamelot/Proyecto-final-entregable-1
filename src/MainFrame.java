@@ -151,7 +151,7 @@ public class MainFrame extends JFrame {
 		panelTerrenos.setBounds(85, 156, 425, 150);
 		contentPane.add(panelTerrenos);
 	}
-//prueba
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
