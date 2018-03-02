@@ -36,6 +36,7 @@ public class MainFrame extends JFrame {
 	private JScrollPane panelTerrenos;
 	private JTable tablaTerrenos;
 	private Tablas modeloTabla;
+	private JTextField txtTotal;
 
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
@@ -75,8 +76,9 @@ public class MainFrame extends JFrame {
 							manejadorMapas.crearMapas(arch.getTerrenos());
 							txtFilas.setText(String.valueOf(manejadorMapas.getFilas()));
 							txtColumnas.setText(String.valueOf(manejadorMapas.getColumnas()));
+							txtTotal.setText(String.valueOf(manejadorMapas.getColumnas() * manejadorMapas.getFilas()));
 							//Mostrando tabla de ID terrenos
-							tablaTerrenos = modeloTabla.actualizarTabla("Terrenos", manejadorMapas.getTerrenosID());
+							tablaTerrenos = modeloTabla.tablaIDTerrenos(manejadorMapas.getTerrenosID());
 							tablaTerrenos.setEnabled(true);
 							//Aquí se manipularía del punto 
 							//1.2 en adelante
@@ -110,12 +112,19 @@ public class MainFrame extends JFrame {
 		lblFilas.setBounds(215, 87, 42, 14);
 		contentPane.add(lblFilas);
 		
-		lblColumnas = new JLabel("columnas.");
+		txtTotal = new JTextField();
+		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
+		txtTotal.setEditable(false);
+		txtTotal.setBounds(476, 84, 42, 20);
+		contentPane.add(txtTotal);
+		txtTotal.setColumns(10);
+		
+		lblColumnas = new JLabel("columnas. Teniendo un total de                        casillas.");
 		lblColumnas.setFont(new Font("Arial", Font.PLAIN, 11));
-		lblColumnas.setBounds(310, 87, 75, 14);
+		lblColumnas.setBounds(310, 87, 274, 14);
 		contentPane.add(lblColumnas);
 		
-		lblInfoTerreno = new JLabel("INFORMACI\u00D3N DEL TERRENO DEL MAPA");
+		lblInfoTerreno = new JLabel("TERRENOS DEL MAPA");
 		lblInfoTerreno.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInfoTerreno.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblInfoTerreno.setBounds(10, 122, 574, 23);
@@ -139,7 +148,7 @@ public class MainFrame extends JFrame {
 		tablaTerrenos = modeloTabla.muestraTabla();
 		tablaTerrenos.setEnabled(true);
 		panelTerrenos = new JScrollPane(tablaTerrenos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		panelTerrenos.setBounds(85, 156, 425, 200);
+		panelTerrenos.setBounds(85, 156, 425, 150);
 		contentPane.add(panelTerrenos);
 	}
 

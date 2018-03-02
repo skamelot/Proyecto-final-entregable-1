@@ -4,7 +4,7 @@ import javax.swing.table.DefaultTableModel;
 public class Tablas {
 	private final static String []ENCABEZADO_FILAS = new String[] {" ","1","2","3","4", "5", "6", "7", "8", "9","10","11","12","13","14","15"};
 	private final static String []ENCABEZADO_COLUMNAS = new String[] {" ","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"};
-	private final static String []ENCABEZADO_SELECCION = new String[] {"Color", "Nombre del terreno", "ID terreno en .txt"};
+	private final static String []ENCABEZADO_SELECCION = new String[] {"Color", "Nombre del terreno", "ID terreno"};
 	
 	private final static int FILAS = 15;
 	private final static int COLUMNAS = 16;
@@ -50,11 +50,13 @@ public class Tablas {
 		modeloTabla.setRowCount(0);
 	}
 	
-	public JTable actualizarTabla(String tipoTabla, String[] datos) {
+	public JTable tablaIDTerrenos(String[] datos) {
 		tablaVacia();
 		
-		if(tipoTabla.equals("Terrenos")) {
-			for(int i=0; i<datos.length; i++)
+		for(int i=0; i<datos.length; i++) {
+			if(datos[i].equals(" "))
+				break;
+			else
 				modeloTabla.addRow(new Object[]{" ", " ", datos[i]});
 		}
 		
