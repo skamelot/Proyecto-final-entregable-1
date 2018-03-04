@@ -4,7 +4,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.sun.xml.internal.ws.Closeable;
+import com.sun.xml.internal.ws.org.objectweb.asm.Label;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
@@ -16,6 +22,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -33,12 +40,18 @@ public class MainFrame extends JFrame {
 	private JTextField txtColumnas;
 	
 	private JButton btnCargarMapa;
-	private Mapas manejadorMapas;
+	private Mapas mapa;
 	private JScrollPane panelTerrenos;
 	private JTable tablaTerrenos;
-	private Tablas modeloTabla;
+	private Tablas modeloTablaTerrenos;
 	private JTextField txtTotal;
-
+	private JButton btnContinuar;
+	private Tablas modeloTablaPreview;
+	private JTable tablaPreview;
+	private JLabel lblPreview;
+	private JScrollPane panelPreview;
+	private boolean primerMapa = true;
+	
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,17 +86,53 @@ public class MainFrame extends JFrame {
 						if( arch.leerArchivo(selector.getSelectedFile().getPath())  ) {
 							
 							//Lectura de archivo y creación del contenido del mapa
-							manejadorMapas = new Mapas(arch.getFilas(), arch.getColumnas());
-							manejadorMapas.crearMapas(arch.getTerrenos());
-							txtFilas.setText(String.valueOf(manejadorMapas.getFilas()));
-							txtColumnas.setText(String.valueOf(manejadorMapas.getColumnas()));
-							txtTotal.setText(String.valueOf(manejadorMapas.getColumnas() * manejadorMapas.getFilas()));
+							mapa = new Mapas(arch.getFilas(), arch.getColumnas());
+							mapa.crearMapas(arch.getTerrenos());
+							txtFilas.setText(String.valueOf(mapa.getFilas()));
+							txtColumnas.setText(String.valueOf(mapa.getColumnas()));
+							txtTotal.setText(String.valueOf(mapa.getColumnas() * mapa.getFilas()));
 							//Mostrando tabla de ID terrenos
-							tablaTerrenos = modeloTabla.tablaIDTerrenos(manejadorMapas.getTerrenosID());
+							tablaTerrenos = modeloTablaTerrenos.tablaIDTerrenos(mapa.getTerrenosID());
 							tablaTerrenos.setEnabled(true);
 							//Preparamos el editor y render para los colores de terreno
-					        tablaTerrenos.setDefaultRenderer(Color.class, new ColorRenderer(true));
-					        tablaTerrenos.setDefaultEditor(Color.class, new EditorColores());
+							tablaTerrenos.setDefaultRenderer(Color.class, new CeldaPuchurrable(true));
+					        tablaTerrenos.setDefaultEditor(Color.class, new SelectorColor());
+					        //Preparamos el preview
+					        if(primerMapa) {
+					        	lblPreview.setVisible(true);
+						        modeloTablaPreview = new Tablas("Preview", mapa.getFilas(), mapa.getColumnas());
+								tablaPreview = modeloTablaPreview.tablaPreview(mapa.getMapeoID());
+								panelPreview = new JScrollPane(tablaPreview, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+								panelPreview.setBounds(85, 294, 425, 210);
+								contentPane.add(panelPreview);
+								primerMapa = false;
+					        }else {
+					        	tablaPreview = modeloTablaPreview.actualizaPreview(mapa.getMapeoID(), mapa.getFilas(), mapa.getColumnas());
+					        }
+					       
+					        //Añadimos un actionListener al modelo de la tabla para que se coloreé el preview
+					        //TableModelEvent e: Contiene fila y columna del dato que se modificó en la tabla
+					        //Para poder hacer uso del dato necesitamos que la tabla nos diga qué es: tabla.getValueAt(e.fila, e.columna);
+					        tablaTerrenos.getModel().addTableModelListener(new TableModelListener() {
+					        	  public void tableChanged(TableModelEvent e) {
+					        		 int fila = e.getFirstRow();
+					        		 int columna = e.getColumn();
+					        		 //case 0: cambio de color
+					        		 //case 1: nombre
+					        		 switch(columna) {
+					        		 case 0:
+					        			 tablaPreview = modeloTablaPreview.colorPreview(mapa.getMapeoID(), (Color) tablaTerrenos.getValueAt(fila, columna), tablaTerrenos.getValueAt(fila, 2).toString());
+					        			 break;
+					        		 case 1:
+					        			 break;
+					        		 default:
+					        			 JOptionPane.showMessageDialog(getRootPane(), "Se supone que no debe salir este mensaje.");
+					        			 break;
+					        		 }
+					        	  }
+					        });
+					        
+					        btnContinuar.setEnabled(true);
 							//Aquí se manipularía del punto 
 							//1.2 en adelante
 						}
@@ -148,16 +197,29 @@ public class MainFrame extends JFrame {
 		contentPane.add(txtColumnas);
 		txtColumnas.setColumns(10);
 		
-		modeloTabla = new Tablas("Terrenos");
-		tablaTerrenos = modeloTabla.muestraTabla();
+		modeloTablaTerrenos = new Tablas("Terrenos",0,0);
+		tablaTerrenos = modeloTablaTerrenos.muestraTabla();
 		tablaTerrenos.setEnabled(true);
 		panelTerrenos = new JScrollPane(tablaTerrenos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		panelTerrenos.setBounds(85, 156, 425, 150);
+		panelTerrenos.setBounds(85, 156, 425, 96);
 		contentPane.add(panelTerrenos);
 		
-		JButton button = new JButton("");
-		button.setBounds(85, 522, 425, 38);
-		contentPane.add(button);
+		btnContinuar = new JButton(" CONTINUAR ");
+		btnContinuar.setEnabled(false);
+		btnContinuar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		btnContinuar.setBounds(85, 522, 425, 38);
+		contentPane.add(btnContinuar);
+		
+		lblPreview = new JLabel("PREVIEW");
+		lblPreview.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblPreview.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPreview.setBounds(10, 263, 574, 20);
+		lblPreview.setVisible(false);
+		contentPane.add(lblPreview);
 	}
 
 	public static void main(String[] args) {

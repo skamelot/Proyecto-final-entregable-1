@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-public class EditorColores extends AbstractCellEditor implements TableCellEditor,ActionListener {
+public class SelectorColor extends AbstractCellEditor implements TableCellEditor,ActionListener {
 	private static final long serialVersionUID = 1L;
 	
 	Color currentColor;
@@ -19,7 +19,7 @@ public class EditorColores extends AbstractCellEditor implements TableCellEditor
     JDialog dialog;
     protected static final String EDIT = "edit";
 
-    EditorColores() {
+    SelectorColor() {
         button = new JButton();
         button.setActionCommand(EDIT);
         button.addActionListener(this);
@@ -27,12 +27,7 @@ public class EditorColores extends AbstractCellEditor implements TableCellEditor
 
         //"Constructor" para el cuadro de diálogo que se crea al presionar el botón
         colorChooser = new JColorChooser();
-        dialog = JColorChooser.createDialog(button,
-                                        "Seleccione el color del terreno",
-                                        true,  //modal (para que no pueda abrir multiples ventanas para seleccionar colores)
-                                        colorChooser,
-                                        this,  //manejador para el botón OK
-                                        null); //si cancela no hace nada
+        dialog = JColorChooser.createDialog(button, "Seleccione el color del terreno", true,  colorChooser, this, null);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -46,7 +41,6 @@ public class EditorColores extends AbstractCellEditor implements TableCellEditor
 
         } else { //Si presiona el botón de OK/Aceptar, color actual se vuelve el nuevo color seleccionado
             currentColor = colorChooser.getColor();
-            
         }
     }
 
@@ -56,11 +50,7 @@ public class EditorColores extends AbstractCellEditor implements TableCellEditor
     }
 
     //Convierte el espacio blanco en un botón "invisible"
-    public Component getTableCellEditorComponent(JTable table,
-                                                 Object value,
-                                                 boolean isSelected,
-                                                 int row,
-                                                 int column) {
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         currentColor = (Color)value;
         return button;
     }
