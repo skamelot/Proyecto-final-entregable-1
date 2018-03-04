@@ -5,27 +5,34 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class ColorearCelda extends DefaultTableCellRenderer {
-	private Color color;
-	private String coloreaID;
+	private static final long serialVersionUID = 1L;
 	
-	ColorearCelda(Color c, String coloreaID){
-		color = c;
-		this.coloreaID = coloreaID;
+	private Color[] color;
+	private String[] terrenoID;
+	
+	ColorearCelda(Color[] color, String[] terrenoID){
+		this.color = color;
+		this.terrenoID = terrenoID;
 	}
+	
     @Override
     public Component getTableCellRendererComponent(JTable table,Object value,boolean isSelected,boolean hasFocus,int row,int column)
     {
-       // Llama al Constructor Padre
+       // Llama al constructor padre
        super.getTableCellRendererComponent (table, value, isSelected, hasFocus, row, column);
        
-       String variable = table.getValueAt(row, column).toString();
-       // Le coloca el color Negro
-       if(variable.equals(coloreaID))
-    	   this.setBackground(color);
-       else
-    	   this.setBackground(Color.GREEN);
+       int pos=0;
+       String valorID = table.getValueAt(row, column).toString();
+       //Extrajimos el ID del terreno, ahora lo que sigue es encontrar su color dentro del arreglo
+       for(int i=0; i<terrenoID.length; i++)
+    	   if(valorID.equals(terrenoID[i])){
+    		   pos = i;
+    		   break;
+    	   }
+       //Una vez que nos posicionamos en el color, le asignamos el fondo de celda 
+       this.setBackground(color[pos]);
        
-       // Retorna el Objeto
+       // Retornamos el objeto (celda completa) con solo el fondo de color
        return this;
     }
 

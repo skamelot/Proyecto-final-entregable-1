@@ -1,3 +1,4 @@
+import java.awt.Color;
 
 public class Mapas {
 	private int filas;
@@ -5,7 +6,7 @@ public class Mapas {
 	private int visitaActual;
 	private String[] nombreTerreno;
 	private String[] terrenosID;
-	private String[] colorTerreno;
+	private Color[] colorTerreno;
 	private String[][] mapaColoreado;
 	private String[][] mapeoID;
 	private String[][] mapaVisitas;
@@ -28,10 +29,12 @@ public class Mapas {
 	public int getVisitaActual() { return visitaActual; }
 	public String[] getTerrenosID() {return terrenosID; }
 	public String[] getNombre() { return nombreTerreno; }
+	public Color[] getColorTerreno() { return colorTerreno; }
 	public String[][] getMapeoID() { return mapeoID; }
 	public String[][] getMapaColoreado(){ return mapaColoreado;}
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
+	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
 	
 	public void crearMapas(String terrenos) {
 		mapeoID = new String[filas][columnas];
@@ -52,15 +55,21 @@ public class Mapas {
 		for(int i=0; i<225; i++)
 			terrenosID[i] = " ";
 		
+		int cantTerrenos = 0;
 		for(int f=0; f<filas; f++)
 			for(int c=0; c<columnas; c++)
 				for(int i=0; i<225; i++) {
 					if(terrenosID[i].equals(" ")) {
 						terrenosID[i] = mapeoID[f][c];
+						cantTerrenos++;
 						break;
 					}else if(terrenosID[i].equals(mapeoID[f][c]))
 						break;
 				}
+		
+		colorTerreno = new Color[cantTerrenos];
+		for(int i=0; i<cantTerrenos; i++)
+			colorTerreno[i] = Color.WHITE;
 	}
 	
 	

@@ -121,12 +121,12 @@ public class MainFrame extends JFrame {
 					        		 //case 1: nombre
 					        		 switch(columna) {
 					        		 case 0:
-					        			 tablaPreview = modeloTablaPreview.colorPreview(mapa.getMapeoID(), (Color) tablaTerrenos.getValueAt(fila, columna), tablaTerrenos.getValueAt(fila, 2).toString());
+					        			 mapa.setColor((Color) tablaTerrenos.getValueAt(fila, columna), fila);
+					        			 tablaPreview = modeloTablaPreview.colorPreview(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					        			 break;
 					        		 case 1:
 					        			 break;
 					        		 default:
-					        			 JOptionPane.showMessageDialog(getRootPane(), "Se supone que no debe salir este mensaje.");
 					        			 break;
 					        		 }
 					        	  }
