@@ -7,10 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.sun.xml.internal.ws.Closeable;
-import com.sun.xml.internal.ws.org.objectweb.asm.Label;
-
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
@@ -22,7 +19,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.JRadioButton;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -51,11 +48,17 @@ public class MainFrame extends JFrame {
 	private JLabel lblPreview;
 	private JScrollPane panelPreview;
 	private boolean primerMapa = true;
+	private JLabel lblNodos;
+	private ButtonGroup nodos;
+	private JRadioButton rdbtnInicio;
+	private JRadioButton rdbtnFinal;
+	private JTextField txtInicio;
+	private JTextField txtFinal;
 	
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 600);
+		setBounds(100, 100, 600, 642);
 		setResizable(false);
 		setLocationRelativeTo(null); //Siempre se abre en el centro de la pantalla independientemente de la resolución
 		
@@ -97,6 +100,14 @@ public class MainFrame extends JFrame {
 							//Preparamos el editor y render para los colores de terreno
 							tablaTerrenos.setDefaultRenderer(Color.class, new CeldaPuchurrable(true));
 					        tablaTerrenos.setDefaultEditor(Color.class, new SelectorColor());
+					        //Demás componentes visibles/editables
+					        tablaTerrenos.setVisible(true);
+					        nodos.clearSelection();
+					        rdbtnInicio.setEnabled(true);
+					        rdbtnFinal.setEnabled(true);
+					        txtInicio.setText("");
+					        txtFinal.setText("");
+					        btnContinuar.setEnabled(true);
 					        //Preparamos el preview
 					        if(primerMapa) {
 					        	lblPreview.setVisible(true);
@@ -132,7 +143,24 @@ public class MainFrame extends JFrame {
 					        	  }
 					        });
 					        
-					        btnContinuar.setEnabled(true);
+					        tablaPreview.addMouseListener(new java.awt.event.MouseAdapter() {
+					        	@Override
+					        	 public void mouseClicked(java.awt.event.MouseEvent evt) {
+					        	    int f = tablaPreview.rowAtPoint(evt.getPoint());
+					        	    int c = tablaPreview.columnAtPoint(evt.getPoint());
+					        	    
+					        	    if (f >= 0 && c >= 1) {
+					        	    	String fila = Tablas.ENCABEZADO_FILAS[f], columna = Tablas.ENCABEZADO_COLUMNAS[c];
+					        	    	
+					        	    	if(rdbtnInicio.isSelected()) 
+					        	    		txtInicio.setText(columna+fila);
+					        	    	else if(rdbtnFinal.isSelected())
+					        	    		txtFinal.setText(columna+fila);
+					        	    }
+					        	 }
+					        });
+					        
+					        
 							//Aquí se manipularía del punto 
 							//1.2 en adelante
 						}
@@ -200,9 +228,58 @@ public class MainFrame extends JFrame {
 		modeloTablaTerrenos = new Tablas("Terrenos",0,0);
 		tablaTerrenos = modeloTablaTerrenos.muestraTabla();
 		tablaTerrenos.setEnabled(true);
+		tablaTerrenos.setVisible(false);
 		panelTerrenos = new JScrollPane(tablaTerrenos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		panelTerrenos.setBounds(85, 156, 425, 96);
 		contentPane.add(panelTerrenos);
+		
+		lblPreview = new JLabel("PREVIEW");
+		lblPreview.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblPreview.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPreview.setBounds(10, 263, 574, 20);
+		contentPane.add(lblPreview);
+		
+		lblNodos = new JLabel("SELECCIONE LOS NODOS PRINCIPALES DANDO CLICK SOBRE LA TABLA PREVIEW");
+		lblNodos.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNodos.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNodos.setBounds(10, 507, 574, 20);
+		contentPane.add(lblNodos);
+		
+		txtInicio = new JTextField();
+		txtInicio.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtInicio.setHorizontalAlignment(SwingConstants.CENTER);
+		txtInicio.setForeground(Color.WHITE);
+		txtInicio.setBackground(Color.DARK_GRAY);
+		txtInicio.setEditable(false);
+		txtInicio.setBounds(204, 535, 42, 20);
+		contentPane.add(txtInicio);
+		txtInicio.setColumns(10);
+		
+		txtFinal = new JTextField();
+		txtFinal.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtFinal.setHorizontalAlignment(SwingConstants.CENTER);
+		txtFinal.setForeground(Color.WHITE);
+		txtFinal.setBackground(Color.DARK_GRAY);
+		txtFinal.setEditable(false);
+		txtFinal.setBounds(425, 535, 42, 20);
+		contentPane.add(txtFinal);
+		txtFinal.setColumns(10);
+		
+		rdbtnInicio = new JRadioButton("Nodo inicio");
+		rdbtnInicio.setEnabled(false);
+		rdbtnInicio.setFont(new Font("Arial", Font.PLAIN, 11));
+		rdbtnInicio.setBounds(115, 534, 85, 23);
+		contentPane.add(rdbtnInicio);
+		
+		rdbtnFinal = new JRadioButton("Nodo final");
+		rdbtnFinal.setEnabled(false);
+		rdbtnFinal.setFont(new Font("Arial", Font.PLAIN, 11));
+		rdbtnFinal.setBounds(342, 534, 85, 23);
+		contentPane.add(rdbtnFinal);
+		
+		nodos = new ButtonGroup();
+		nodos.add(rdbtnInicio);
+		nodos.add(rdbtnFinal);
 		
 		btnContinuar = new JButton(" CONTINUAR ");
 		btnContinuar.setEnabled(false);
@@ -211,15 +288,8 @@ public class MainFrame extends JFrame {
 				
 			}
 		});
-		btnContinuar.setBounds(85, 522, 425, 38);
+		btnContinuar.setBounds(85, 566, 425, 38);
 		contentPane.add(btnContinuar);
-		
-		lblPreview = new JLabel("PREVIEW");
-		lblPreview.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblPreview.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPreview.setBounds(10, 263, 574, 20);
-		lblPreview.setVisible(false);
-		contentPane.add(lblPreview);
 	}
 
 	public static void main(String[] args) {
