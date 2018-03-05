@@ -4,13 +4,13 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class ColorearCelda extends DefaultTableCellRenderer {
+public class ColorCeldaTabla extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	
 	private Color[] color;
 	private String[] terrenoID;
 	
-	ColorearCelda(Color[] color, String[] terrenoID){
+	ColorCeldaTabla(Color[] color, String[] terrenoID){
 		this.color = color;
 		this.terrenoID = terrenoID;
 	}

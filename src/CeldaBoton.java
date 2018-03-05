@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-public class SelectorColor extends AbstractCellEditor implements TableCellEditor,ActionListener {
+public class CeldaBoton extends AbstractCellEditor implements TableCellEditor,ActionListener {
 	private static final long serialVersionUID = 1L;
 	
 	Color currentColor;
@@ -19,7 +19,7 @@ public class SelectorColor extends AbstractCellEditor implements TableCellEditor
     JDialog dialog;
     protected static final String EDIT = "edit";
 
-    SelectorColor() {
+    CeldaBoton() {
         button = new JButton();
         button.setActionCommand(EDIT);
         button.addActionListener(this);
@@ -37,7 +37,7 @@ public class SelectorColor extends AbstractCellEditor implements TableCellEditor
             colorChooser.setColor(currentColor);
             dialog.setVisible(true);
 
-            fireEditingStopped(); //Renderiza el color de nuevo, sin esto se queda bugeado el programa
+            fireEditingStopped(); //Renderiza el botón de nuevo, sin esto se queda bugeado el programa
 
         } else { //Si presiona el botón de OK/Aceptar, color actual se vuelve el nuevo color seleccionado
             currentColor = colorChooser.getColor();

@@ -170,7 +170,7 @@ public class Tablas {
 		}
 		
 		for(int c=1; c<tabla.getColumnCount(); c++)
-			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorearCelda(color, terrenoID));
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID));
 		
 		return tabla;
 	}

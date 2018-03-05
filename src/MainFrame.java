@@ -98,8 +98,8 @@ public class MainFrame extends JFrame {
 							tablaTerrenos = modeloTablaTerrenos.tablaIDTerrenos(mapa.getTerrenosID());
 							tablaTerrenos.setEnabled(true);
 							//Preparamos el editor y render para los colores de terreno
-							tablaTerrenos.setDefaultRenderer(Color.class, new CeldaPuchurrable(true));
-					        tablaTerrenos.setDefaultEditor(Color.class, new SelectorColor());
+							tablaTerrenos.setDefaultRenderer(Color.class, new ColorBoton(true));
+					        tablaTerrenos.setDefaultEditor(Color.class, new CeldaBoton());
 					        //Demás componentes visibles/editables
 					        tablaTerrenos.setVisible(true);
 					        nodos.clearSelection();

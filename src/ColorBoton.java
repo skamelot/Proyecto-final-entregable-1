@@ -6,14 +6,14 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 
-public class CeldaPuchurrable extends JLabel implements TableCellRenderer {
+public class ColorBoton extends JLabel implements TableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	
 	Border unselectedBorder = null;
     Border selectedBorder = null;
     boolean isBordered = true;
 
-    public CeldaPuchurrable(boolean isBordered) {
+    public ColorBoton(boolean isBordered) {
         this.isBordered = isBordered;
         setOpaque(true); //MUST do this for background to show up.
     }

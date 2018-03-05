@@ -7,9 +7,7 @@ public class Mapas {
 	private String[] nombreTerreno;
 	private String[] terrenosID;
 	private Color[] colorTerreno;
-	private String[][] mapaColoreado;
 	private String[][] mapeoID;
-	private String[][] mapaVisitas;
 	
 	
 	Mapas(int f, int c){
@@ -19,9 +17,7 @@ public class Mapas {
 		mapeoID = null;
 		nombreTerreno = null;
 		terrenosID = null;
-		mapaVisitas = null;
 		colorTerreno = null;
-		mapaColoreado = null;
 	}
 	
 	public int getFilas() { return filas; }
@@ -31,14 +27,12 @@ public class Mapas {
 	public String[] getNombre() { return nombreTerreno; }
 	public Color[] getColorTerreno() { return colorTerreno; }
 	public String[][] getMapeoID() { return mapeoID; }
-	public String[][] getMapaColoreado(){ return mapaColoreado;}
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
 	
 	public void crearMapas(String terrenos) {
 		mapeoID = new String[filas][columnas];
-		mapaVisitas = new String[filas][columnas];
 		String []aux = terrenos.split(",");
 		for(int i=0,columna=0,fila=0; i<aux.length; i++, columna++) {
 			if(columna<columnas)
@@ -48,7 +42,6 @@ public class Mapas {
 				fila++;
 				mapeoID[fila][columna] = aux[i];
 			}
-			mapaVisitas[fila][columna] = aux[i] + "-";
 		}
 		//Buscamos cuántos terrenos existen y su ID
 		terrenosID = new String[225]; //225 porque en el caso extremo de que cada casilla sea un ID distinto se puede tener 15*15 = 225 IDs distintos
