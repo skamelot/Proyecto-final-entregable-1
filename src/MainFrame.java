@@ -285,7 +285,62 @@ public class MainFrame extends JFrame {
 		btnContinuar.setEnabled(false);
 		btnContinuar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//Validamos que no tenga nombres vacíos
+				for(int i=0; i<tablaTerrenos.getRowCount(); i++) {
+					String nombre = tablaTerrenos.getValueAt(i, 1).toString(); //columna nombre
+					if(nombre.isEmpty()) {
+						JOptionPane.showMessageDialog(getRootPane(), "No puede tener nombres de terrenos vacíos. \nID del terreno con nombre vacío: "+tablaTerrenos.getValueAt(i, 2).toString());
+						return;
+					}else if(nombre.length()<3) {
+						JOptionPane.showMessageDialog(getRootPane(), "Ingrese nombres de terrenos significativos. \nVerificar nombre para ID: "+tablaTerrenos.getValueAt(i, 2).toString());
+						return;
+					}else {
+						for(int j=0; j<tablaTerrenos.getRowCount(); j++) {
+							if(nombre.equals(tablaTerrenos.getValueAt(j,1).toString()) && j!=i) {
+								JOptionPane.showMessageDialog(getRootPane(), "¡COLISIÓN DE NOMBRES! El nombre para los ID "+tablaTerrenos.getValueAt(i, 2).toString()+" y "+tablaTerrenos.getValueAt(j,2).toString()+"\n son idénticos. Por favor verifique los nombres de ambos terrenos.");
+								return;
+							}
+						}
+					}
+				}//Fin for de nombres
+					
+				//Los terrenos pasaron la prueba de los nombres, ahora sigue verificar colores
+				for(int i=0; i<tablaTerrenos.getRowCount(); i++) {
+					if(!mapa.getColorTerreno()[i].equals(tablaTerrenos.getValueAt(i, 0))) {
+						JOptionPane.showMessageDialog(getRootPane(), "No ha seleccionado color para el ID "+tablaTerrenos.getValueAt(i, 2)+". \nSeleccione su color por favor.");
+						return;
+					}else {
+						for(int j=0; j<tablaTerrenos.getRowCount(); j++) {
+							if(tablaTerrenos.getValueAt(i, 0).equals(tablaTerrenos.getValueAt(j,0)) && j!=i) {
+								JOptionPane.showMessageDialog(getRootPane(), "¡COLISIÓN DE COLORES! Los colores para los ID "+tablaTerrenos.getValueAt(i, 2).toString()+" y "+tablaTerrenos.getValueAt(j,2).toString()+"\n son idénticos. Por favor seleccione distintos colores para ambos.");
+								return;
+							}
+						}
+					}
+				}//Fin for de colores
 				
+				/*
+				 * Tan simple como eso. ¿Cómo funciona? Facilongo... 
+				 * En la clase Mapas existe un arreglo String donde se almacena el color correspondiente a cada ID.
+				 * ¿cómo sé cuál es cada ID? Se almacenan en orden de aparición, por lo que la tabla y el arreglo tienen el mismo orden.
+				 * El arreglo se inicializa con valores blanco, mientras que la tabla tiene valores negros.
+				 * En caso de que no coincidan es porque no se ha elegido color, caso contrario la tabla y el arreglo tendrán el mismo valor.
+				 * Y al igual que los nombres, evitamos colores repetidos
+				 * 
+				 */
+				
+				//Finalmente validamos que ya se haya seleccionado un nodo inicial y final.
+				if(txtInicio.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(getRootPane(), "¡Oops! Aún no sé de dónde vamos a iniciar.\nPor favor seleccione el nodo inicial.");
+					return;
+				}else if(txtFinal.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(getRootPane(), "Conocemos el inicio pero no el final.\nPor favor seleccione el nodo final.");
+					return;
+				}
+				
+				//Después de haber validado todo, lo pasamos al constructor de la siguiente ventana que sería el juego
+				String ini = txtInicio.getText();
+				String fin = txtFinal.getText();
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);
