@@ -133,7 +133,7 @@ public class MainFrame extends JFrame {
 					        		 switch(columna) {
 					        		 case 0:
 					        			 mapa.setColor((Color) tablaTerrenos.getValueAt(fila, columna), fila);
-					        			 tablaPreview = modeloTablaPreview.colorPreview(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
+					        			 tablaPreview = modeloTablaPreview.coloreaTabla(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					        			 break;
 					        		 case 1:
 					        			 break;
@@ -339,8 +339,9 @@ public class MainFrame extends JFrame {
 				}
 				
 				//Después de haber validado todo, lo pasamos al constructor de la siguiente ventana que sería el juego
-				String ini = txtInicio.getText();
-				String fin = txtFinal.getText();
+				FrameJuego juego = new FrameJuego(txtInicio.getText(),txtFinal.getText(),mapa);
+				juego.setVisible(true);
+				dispose();
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);

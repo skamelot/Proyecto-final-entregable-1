@@ -154,7 +154,7 @@ public class Tablas {
 		return tabla;
 	}
 	
-	public JTable colorPreview(String[][] mapeoID, Color[] color, String[] terrenoID) {
+	public JTable coloreaTabla(String[][] mapeoID, Color[] color, String[] terrenoID) {
 		tablaVacia();
 		
 		Object[] data = new Object[columnas];

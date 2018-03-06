@@ -8,6 +8,7 @@ public class Mapas {
 	private String[] terrenosID;
 	private Color[] colorTerreno;
 	private String[][] mapeoID;
+	private String[][] mapaRecorrido;
 	
 	
 	Mapas(int f, int c){
@@ -18,6 +19,7 @@ public class Mapas {
 		nombreTerreno = null;
 		terrenosID = null;
 		colorTerreno = null;
+		mapaRecorrido = null;
 	}
 	
 	public int getFilas() { return filas; }
@@ -30,17 +32,29 @@ public class Mapas {
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
+	public void actualizaRecorrido(int fila, int columna) { 
+		if(mapaRecorrido[fila][columna].isEmpty())
+			mapaRecorrido[fila][columna] = String.valueOf(visitaActual);
+		else
+			mapaRecorrido[fila][columna] = ", "+String.valueOf(visitaActual);
+		visitaActual++;
+	}
 	
 	public void crearMapas(String terrenos) {
 		mapeoID = new String[filas][columnas];
+		mapaRecorrido = new String[filas][columnas];
 		String []aux = terrenos.split(",");
+		
 		for(int i=0,columna=0,fila=0; i<aux.length; i++, columna++) {
-			if(columna<columnas)
+			if(columna<columnas) {
 				mapeoID[fila][columna] = aux[i];
+				mapaRecorrido[fila][columna] = "";
+			}
 			else {
 				columna = 0;
 				fila++;
 				mapeoID[fila][columna] = aux[i];
+				mapaRecorrido[fila][columna] = "";
 			}
 		}
 		//Buscamos cuántos terrenos existen y su ID
