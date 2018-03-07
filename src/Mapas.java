@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Mapas {
 	private int filas;
@@ -29,6 +30,7 @@ public class Mapas {
 	public String[] getNombre() { return nombreTerreno; }
 	public Color[] getColorTerreno() { return colorTerreno; }
 	public String[][] getMapeoID() { return mapeoID; }
+	public String[][] getMapaRecorrido() { return mapaRecorrido; }
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
@@ -45,16 +47,29 @@ public class Mapas {
 		mapaRecorrido = new String[filas][columnas];
 		String []aux = terrenos.split(",");
 		
+		for(int i=0; i<filas; i++)
+			for(int j=0; j<columnas; j++)
+				mapaRecorrido[i][j]="";
+		
 		for(int i=0,columna=0,fila=0; i<aux.length; i++, columna++) {
-			if(columna<columnas) {
+			if(columna<columnas) 
 				mapeoID[fila][columna] = aux[i];
-				mapaRecorrido[fila][columna] = "";
-			}
 			else {
 				columna = 0;
 				fila++;
 				mapeoID[fila][columna] = aux[i];
-				mapaRecorrido[fila][columna] = "";
+			}
+		}
+		
+		for(int i=0; i<filas; i++) {
+			for(int j=0; j<columnas; j++) {
+				for(int random = 0; random<ThreadLocalRandom.current().nextInt(1, 20 + 1); random++) {
+					int randomNum = ThreadLocalRandom.current().nextInt(1, 100 + 1);
+					if(mapaRecorrido[i][j].isEmpty())
+						mapaRecorrido[i][j] = String.valueOf(randomNum);
+					else
+						mapaRecorrido[i][j] += ", "+String.valueOf(randomNum);
+				}
 			}
 		}
 		//Buscamos cuántos terrenos existen y su ID

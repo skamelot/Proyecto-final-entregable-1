@@ -48,6 +48,11 @@ public class Tablas {
 				}
 			};
 			this.columnas++;
+			
+			String[] cabecera = new String[this.columnas];
+			for(int i=0; i<this.columnas; i++)
+				cabecera[i] = ENCABEZADO_COLUMNAS[i];
+			modeloTabla.setColumnIdentifiers(cabecera);
 		}
 		
 		tabla = new JTable(modeloTabla);
@@ -64,8 +69,10 @@ public class Tablas {
 		    tabla.getColumnModel().getColumn(0).setPreferredWidth(120);//Color
 		    tabla.getColumnModel().getColumn(1).setPreferredWidth(222);//Nombre
 		    tabla.getColumnModel().getColumn(2).setPreferredWidth(70);//ID
-	    }else
+	    }else if(tipoTabla.equals("Preview"))
 	    	tabla.setRowHeight(180/filas);
+	    else
+	    	tabla.setRowHeight(296/filas);
 	}
 	
 	private void tablaVacia() {
@@ -74,6 +81,7 @@ public class Tablas {
 	}
 	
 	public JTable muestraTabla() { 
+		tablaVacia();
 		return tabla;
 	}
 	
@@ -89,29 +97,7 @@ public class Tablas {
 		return tabla;
 	}
 	
-	public JTable tablaPreview(String mapeoID[][]) {
-		tablaVacia();
-		
-		String[] cabecera = new String[this.columnas];
-		for(int i=0; i<columnas; i++)
-			cabecera[i] = ENCABEZADO_COLUMNAS[i];
-		modeloTabla.setColumnIdentifiers(cabecera);
-		
-		String[] dataID = new String[columnas];
-		for(int f=0; f<filas; f++) {
-			for(int c=0; c<columnas; c++) {
-				if(c==0)
-					dataID[c] = ENCABEZADO_FILAS[f];
-				else
-					dataID[c] = mapeoID[f][c-1];
-			}
-			modeloTabla.addRow(dataID);
-		}
-		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
-		return tabla;
-	}
-	
-	public JTable actualizaPreview(String mapeoID[][], int filas, int columnas) {
+	public JTable tablaPreview(String mapeoID[][], int filas, int columnas) {
 		this.filas = filas;
 		this.columnas = columnas+1;
 		
@@ -175,5 +161,25 @@ public class Tablas {
 		return tabla;
 	}
 	
-	
+	public JTable tablaJuego(String mapeoID[][]) {
+		tablaVacia();
+		
+		String[] cabecera = new String[this.columnas];
+		for(int i=0; i<columnas; i++)
+			cabecera[i] = ENCABEZADO_COLUMNAS[i];
+		modeloTabla.setColumnIdentifiers(cabecera);
+		
+		String[] dataID = new String[columnas];
+		for(int f=0; f<filas; f++) {
+			for(int c=0; c<columnas; c++) {
+				if(c==0)
+					dataID[c] = ENCABEZADO_FILAS[f];
+				else
+					dataID[c] = mapeoID[f][c-1];
+			}
+			modeloTabla.addRow(dataID);
+		}
+		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
+		return tabla;
+	}
 }

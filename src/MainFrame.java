@@ -47,7 +47,6 @@ public class MainFrame extends JFrame {
 	private JTable tablaPreview;
 	private JLabel lblPreview;
 	private JScrollPane panelPreview;
-	private boolean primerMapa = true;
 	private JLabel lblNodos;
 	private ButtonGroup nodos;
 	private JRadioButton rdbtnInicio;
@@ -109,18 +108,8 @@ public class MainFrame extends JFrame {
 					        txtFinal.setText("");
 					        btnContinuar.setEnabled(true);
 					        //Preparamos el preview
-					        if(primerMapa) {
-					        	lblPreview.setVisible(true);
-						        modeloTablaPreview = new Tablas("Preview", mapa.getFilas(), mapa.getColumnas());
-								tablaPreview = modeloTablaPreview.tablaPreview(mapa.getMapeoID());
-								panelPreview = new JScrollPane(tablaPreview, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-								panelPreview.setBounds(85, 294, 425, 210);
-								contentPane.add(panelPreview);
-								primerMapa = false;
-					        }else {
-					        	tablaPreview = modeloTablaPreview.actualizaPreview(mapa.getMapeoID(), mapa.getFilas(), mapa.getColumnas());
-					        }
-					       
+					        tablaPreview = modeloTablaPreview.tablaPreview(mapa.getMapeoID(), mapa.getFilas(), mapa.getColumnas());
+					        tablaPreview.setEnabled(true);
 					        //Añadimos un actionListener al modelo de la tabla para que se coloreé el preview
 					        //TableModelEvent e: Contiene fila y columna del dato que se modificó en la tabla
 					        //Para poder hacer uso del dato necesitamos que la tabla nos diga qué es: tabla.getValueAt(e.fila, e.columna);
@@ -159,15 +148,20 @@ public class MainFrame extends JFrame {
 					        	    }
 					        	 }
 					        });
-					        
-					        
-							//Aquí se manipularía del punto 
-							//1.2 en adelante
 						}
 						else {
 							JOptionPane.showMessageDialog(getRootPane(), arch.getError());
 							txtFilas.setText("");
 							txtColumnas.setText("");
+							txtTotal.setText("");
+							tablaTerrenos = modeloTablaTerrenos.muestraTabla();
+							tablaPreview = modeloTablaPreview.muestraTabla();
+							txtInicio.setText("");
+					        txtFinal.setText("");
+					        nodos.clearSelection();
+					        rdbtnInicio.setEnabled(false);
+					        rdbtnFinal.setEnabled(false);
+					        btnContinuar.setEnabled(false);
 						}
 						
 					} catch (IOException e) { e.printStackTrace(); }
@@ -239,6 +233,13 @@ public class MainFrame extends JFrame {
 		lblPreview.setBounds(10, 263, 574, 20);
 		contentPane.add(lblPreview);
 		
+		modeloTablaPreview = new Tablas("Preview", 1, 15);
+		tablaPreview = modeloTablaPreview.muestraTabla();
+		tablaPreview.setEnabled(false);
+		panelPreview = new JScrollPane(tablaPreview, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		panelPreview.setBounds(85, 294, 425, 210);
+		contentPane.add(panelPreview);
+		
 		lblNodos = new JLabel("SELECCIONE LOS NODOS PRINCIPALES DANDO CLICK SOBRE LA TABLA PREVIEW");
 		lblNodos.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNodos.setHorizontalAlignment(SwingConstants.CENTER);
@@ -295,12 +296,15 @@ public class MainFrame extends JFrame {
 						JOptionPane.showMessageDialog(getRootPane(), "Ingrese nombres de terrenos significativos. \nVerificar nombre para ID: "+tablaTerrenos.getValueAt(i, 2).toString());
 						return;
 					}else {
+						String[] nombres = new String[tablaTerrenos.getRowCount()];
 						for(int j=0; j<tablaTerrenos.getRowCount(); j++) {
 							if(nombre.equals(tablaTerrenos.getValueAt(j,1).toString()) && j!=i) {
 								JOptionPane.showMessageDialog(getRootPane(), "¡COLISIÓN DE NOMBRES! El nombre para los ID "+tablaTerrenos.getValueAt(i, 2).toString()+" y "+tablaTerrenos.getValueAt(j,2).toString()+"\n son idénticos. Por favor verifique los nombres de ambos terrenos.");
 								return;
-							}
+							}else
+								nombres[j] = tablaTerrenos.getValueAt(j,1).toString();
 						}
+						mapa.setNombre(nombres);
 					}
 				}//Fin for de nombres
 					
@@ -340,8 +344,8 @@ public class MainFrame extends JFrame {
 				
 				//Después de haber validado todo, lo pasamos al constructor de la siguiente ventana que sería el juego
 				FrameJuego juego = new FrameJuego(txtInicio.getText(),txtFinal.getText(),mapa);
-				juego.setVisible(true);
 				dispose();
+				juego.setVisible(true);
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);

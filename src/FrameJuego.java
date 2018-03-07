@@ -1,6 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,6 +8,10 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrameJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -26,12 +27,21 @@ public class FrameJuego extends JFrame {
 	private JTextField txtPosActual;
 	private JTextField txtVisita;
 	private JScrollPane panelMapa;
+	private JLabel lblSeleccion;
+	private JLabel lblNombre;
+	private JTextField txtNombre;
+	private JTextField txtID;
+	private JTextField txtColor;
+	private JTextField txtCoordenada;
+	private JLabel lblVisitas;
+	private JTextArea txtVisitas;
+	private JButton btnNuevo;
 
 	public FrameJuego(String ini, String fin, Mapas propiedades ) {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 550);
+		setBounds(100, 100, 700, 580);
 		setLocationRelativeTo(null); //Siempre se abre en el centro de la pantalla independientemente de la resolución
 		
 		contentPane = new JPanel();
@@ -42,6 +52,38 @@ public class FrameJuego extends JFrame {
 		this.ini = ini;
 		this.fin = fin;
 		mapa = propiedades;
+		
+		//Se crea el mapa a mostrar
+		modeloTabla = new Tablas("Juego", mapa.getFilas(), mapa.getColumnas());
+		//Cargamos el mapa primero
+		tablaMapa = modeloTabla.tablaJuego(mapa.getMapeoID());
+		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
+		tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
+		panelMapa = new JScrollPane(tablaMapa, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		panelMapa.setBounds(10, 39, 674, 320);
+		contentPane.add(panelMapa);
+		tablaMapa.addMouseListener(new java.awt.event.MouseAdapter() {
+        	@Override
+       	 public void mouseClicked(java.awt.event.MouseEvent evt) {
+       	    int f = tablaMapa.rowAtPoint(evt.getPoint());
+       	    int c = tablaMapa.columnAtPoint(evt.getPoint());
+       	    
+       	    if (f >= 0 && c >= 1) {
+       	    	String fila = Tablas.ENCABEZADO_FILAS[f], columna = Tablas.ENCABEZADO_COLUMNAS[c];
+       	    	int pos = 0;
+       	    	for(int i=0; i<mapa.getTerrenosID().length; i++)
+       	    		if(mapa.getTerrenosID()[i].equals(tablaMapa.getValueAt(f, c).toString())){
+       	    			pos = i;
+       	    			break;
+       	    		}
+       	    	txtNombre.setText(mapa.getNombre()[pos]);
+       	    	txtID.setText(mapa.getTerrenosID()[pos]);
+       	    	txtColor.setBackground(mapa.getColorTerreno()[pos]);
+       	    	txtCoordenada.setText(columna+fila);
+       	    	txtVisitas.setText(mapa.getMapaRecorrido()[f][c-1]);
+       	    }
+       	 }
+       });
 		
 		txtInicio = new JTextField(this.ini);
 		txtInicio.setBackground(Color.DARK_GRAY);
@@ -86,14 +128,64 @@ public class FrameJuego extends JFrame {
 		lblInfo.setBounds(38, 11, 618, 14);
 		contentPane.add(lblInfo);
 		
-		//Se crea el mapa a mostrar
-		modeloTabla = new Tablas("Juego", mapa.getFilas(), mapa.getColumnas());
-		//Cargamos el mapa primero
-		tablaMapa = modeloTabla.tablaPreview(mapa.getMapeoID());
-		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
-		tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
-		panelMapa = new JScrollPane(tablaMapa, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		panelMapa.setBounds(10, 39, 674, 320);
-		contentPane.add(panelMapa);
+		lblSeleccion = new JLabel("SELECCIONE UNA CASILLA PARA MOSTRAR SU INFORMACI\u00D3N");
+		lblSeleccion.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSeleccion.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblSeleccion.setBounds(10, 370, 674, 14);
+		contentPane.add(lblSeleccion);
+		
+		txtNombre = new JTextField();
+		txtNombre.setEditable(false);
+		txtNombre.setBounds(111, 407, 134, 20);
+		contentPane.add(txtNombre);
+		txtNombre.setColumns(10);
+		
+		txtID = new JTextField();
+		txtID.setHorizontalAlignment(SwingConstants.CENTER);
+		txtID.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		txtID.setEditable(false);
+		txtID.setBounds(323, 407, 57, 20);
+		contentPane.add(txtID);
+		txtID.setColumns(10);
+		
+		txtColor = new JTextField();
+		txtColor.setEditable(false);
+		txtColor.setBounds(483, 407, 57, 20);
+		contentPane.add(txtColor);
+		txtColor.setColumns(10);
+		
+		txtCoordenada = new JTextField();
+		txtCoordenada.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtCoordenada.setHorizontalAlignment(SwingConstants.CENTER);
+		txtCoordenada.setEditable(false);
+		txtCoordenada.setBounds(627, 407, 57, 20);
+		contentPane.add(txtCoordenada);
+		txtCoordenada.setColumns(10);
+		
+		lblNombre = new JLabel("Nombre de terreno:                                                  ID de terreno:                          Color del terreno:                          Coordenada:");
+		lblNombre.setFont(new Font("Arial", Font.PLAIN, 11));
+		lblNombre.setBounds(10, 410, 674, 14);
+		contentPane.add(lblNombre);
+		
+		lblVisitas = new JLabel("N\u00FAmero de visitas:");
+		lblVisitas.setFont(new Font("Arial", Font.PLAIN, 11));
+		lblVisitas.setBounds(10, 435, 106, 14);
+		contentPane.add(lblVisitas);
+		
+		txtVisitas = new JTextArea();
+		txtVisitas.setEditable(false);
+		txtVisitas.setBounds(10, 454, 674, 57);
+		contentPane.add(txtVisitas);
+		
+		btnNuevo = new JButton("Cargar nuevo mapa");
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainFrame nuevo = new MainFrame();
+				dispose();
+				nuevo.setVisible(true);
+			}
+		});
+		btnNuevo.setBounds(228, 522, 237, 23);
+		contentPane.add(btnNuevo);
 	}
 }
