@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Mapas {
 	private int filas;
@@ -34,6 +33,8 @@ public class Mapas {
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
+	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I - "; }
+	public void setFinal(int fila, int columna) { mapaRecorrido[fila][columna] = "F - "; }
 	public void actualizaRecorrido(int fila, int columna) { 
 		if(mapaRecorrido[fila][columna].isEmpty())
 			mapaRecorrido[fila][columna] = String.valueOf(visitaActual);
@@ -61,17 +62,6 @@ public class Mapas {
 			}
 		}
 		
-		for(int i=0; i<filas; i++) {
-			for(int j=0; j<columnas; j++) {
-				for(int random = 0; random<ThreadLocalRandom.current().nextInt(1, 20 + 1); random++) {
-					int randomNum = ThreadLocalRandom.current().nextInt(1, 100 + 1);
-					if(mapaRecorrido[i][j].isEmpty())
-						mapaRecorrido[i][j] = String.valueOf(randomNum);
-					else
-						mapaRecorrido[i][j] += ", "+String.valueOf(randomNum);
-				}
-			}
-		}
 		//Buscamos cuántos terrenos existen y su ID
 		terrenosID = new String[225]; //225 porque en el caso extremo de que cada casilla sea un ID distinto se puede tener 15*15 = 225 IDs distintos
 		for(int i=0; i<225; i++)

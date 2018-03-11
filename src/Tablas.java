@@ -140,7 +140,56 @@ public class Tablas {
 		return tabla;
 	}
 	
-	public JTable coloreaTabla(String[][] mapeoID, Color[] color, String[] terrenoID) {
+	public JTable coloreaTabla(String[][] mapaVisitas, Color[] color, String[] terrenoID) {
+		tablaVacia();
+		
+		Object[] data = new Object[columnas];
+		for(int f=0; f<filas; f++){
+			for(int c=0; c<columnas; c++) {
+				if(c==0)
+					data[c] = ENCABEZADO_FILAS[f];
+				else {
+					data[c] = mapaVisitas[f][c-1];
+				}
+			}
+			modeloTabla.addRow(data);
+		}
+		
+		for(int c=1; c<tabla.getColumnCount(); c++)
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID));
+		
+		return tabla;
+	}
+	
+	public JTable tablaJuego(int iniF, int iniC, int finF, int finC ) {
+		tablaVacia();
+		
+		String[] cabecera = new String[this.columnas];
+		for(int i=0; i<columnas; i++)
+			cabecera[i] = ENCABEZADO_COLUMNAS[i];
+		modeloTabla.setColumnIdentifiers(cabecera);
+		
+		String[] dataID = new String[columnas];
+		for(int f=0; f<filas; f++) {
+			for(int c=0; c<columnas; c++) {
+				if(c==0)
+					dataID[c] = ENCABEZADO_FILAS[f];
+				else {
+					if(f==iniF && c==iniC)
+						dataID[c] = "I - ";
+					else if (f==finF && c==finC)
+						dataID[c] = "F - ";
+					else
+						dataID[c] = "";
+				}
+			}
+			modeloTabla.addRow(dataID);
+		}
+		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
+		return tabla;
+	}
+	
+	public JTable propiedadesJuego(String[][] mapeoID, Color[] color, String[] terrenoID, int iniF, int iniC, int finF, int finC) {
 		tablaVacia();
 		
 		Object[] data = new Object[columnas];
@@ -158,28 +207,18 @@ public class Tablas {
 		for(int c=1; c<tabla.getColumnCount(); c++)
 			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID));
 		
-		return tabla;
-	}
-	
-	public JTable tablaJuego(String mapeoID[][]) {
-		tablaVacia();
-		
-		String[] cabecera = new String[this.columnas];
-		for(int i=0; i<columnas; i++)
-			cabecera[i] = ENCABEZADO_COLUMNAS[i];
-		modeloTabla.setColumnIdentifiers(cabecera);
-		
-		String[] dataID = new String[columnas];
-		for(int f=0; f<filas; f++) {
-			for(int c=0; c<columnas; c++) {
-				if(c==0)
-					dataID[c] = ENCABEZADO_FILAS[f];
+		for(int f=0; f<tabla.getRowCount(); f++) {
+			for(int c=1; c<tabla.getColumnCount(); c++) {
+				if(f==iniF && c==iniC)
+					tabla.setValueAt("I - ", f, c);
+				else if(f==finF && c==finC)
+					tabla.setValueAt("F - ", f, c);
 				else
-					dataID[c] = mapeoID[f][c-1];
+					tabla.setValueAt("", f, c);
 			}
-			modeloTabla.addRow(dataID);
 		}
 		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
+		
 		return tabla;
 	}
 }

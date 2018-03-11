@@ -53,6 +53,10 @@ public class MainFrame extends JFrame {
 	private JRadioButton rdbtnFinal;
 	private JTextField txtInicio;
 	private JTextField txtFinal;
+	private int iniF;
+	private int iniC;
+	private int finF;
+	private int finC;
 	
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
@@ -141,10 +145,16 @@ public class MainFrame extends JFrame {
 					        	    if (f >= 0 && c >= 1) {
 					        	    	String fila = Tablas.ENCABEZADO_FILAS[f], columna = Tablas.ENCABEZADO_COLUMNAS[c];
 					        	    	
-					        	    	if(rdbtnInicio.isSelected()) 
+					        	    	if(rdbtnInicio.isSelected()) {
 					        	    		txtInicio.setText(columna+fila);
-					        	    	else if(rdbtnFinal.isSelected())
+					        	    		iniF = f;
+					        	    		iniC = c;
+					        	    	}
+					        	    	else if(rdbtnFinal.isSelected()) {
 					        	    		txtFinal.setText(columna+fila);
+					        	    		finF = f;
+					        	    		finC = c;
+					        	    	}
 					        	    }
 					        	 }
 					        });
@@ -343,8 +353,8 @@ public class MainFrame extends JFrame {
 				}
 				
 				//Después de haber validado todo, lo pasamos al constructor de la siguiente ventana que sería el juego
-				FrameJuego juego = new FrameJuego(txtInicio.getText(),txtFinal.getText(),mapa);
-				dispose();
+				FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
+				
 				juego.setVisible(true);
 			}
 		});

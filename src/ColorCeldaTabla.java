@@ -35,5 +35,4 @@ public class ColorCeldaTabla extends DefaultTableCellRenderer {
        // Retornamos el objeto (celda completa) con solo el fondo de color
        return this;
     }
-
 }

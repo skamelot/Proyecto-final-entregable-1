@@ -12,6 +12,8 @@ import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FrameJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -36,8 +38,15 @@ public class FrameJuego extends JFrame {
 	private JLabel lblVisitas;
 	private JTextArea txtVisitas;
 	private JButton btnNuevo;
+	private int fila;
+	private int columna;
+	
+	private int iniFila;
+	private int iniColumna;
+	private int finFila;
+	private int finColumna;
 
-	public FrameJuego(String ini, String fin, Mapas propiedades ) {
+	public FrameJuego(String ini, int posIniF, int posIniC, String fin, int posFinF, int posFinC, Mapas propiedades ) {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,13 +61,51 @@ public class FrameJuego extends JFrame {
 		this.ini = ini;
 		this.fin = fin;
 		mapa = propiedades;
+		fila = iniFila;
+		columna = iniColumna;
+		
+		iniFila = posIniF;
+		iniColumna = posIniC-1;
+		finFila = posFinF;
+		finColumna = posFinC-1;
+		
 		
 		//Se crea el mapa a mostrar
 		modeloTabla = new Tablas("Juego", mapa.getFilas(), mapa.getColumnas());
 		//Cargamos el mapa primero
-		tablaMapa = modeloTabla.tablaJuego(mapa.getMapeoID());
+		//tablaMapa = modeloTabla.tablaJuego(iniFila, iniColumna, finFila, finColumna);
+		mapa.setInicio(iniFila, iniColumna);
+		mapa.setFinal(finFila, finColumna);
 		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
-		tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
+		tablaMapa = modeloTabla.propiedadesJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1);
+		tablaMapa.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent tecla) {
+				if(tecla.getKeyCode() == KeyEvent.VK_UP) {
+					if(fila>0 && columna!=1) {
+						fila--;
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+						mapa.actualizaRecorrido(fila, columna-1);
+						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+					}
+				}else if(tecla.getKeyCode() == KeyEvent.VK_DOWN) {
+					if(fila<mapa.getFilas()-1 && columna!=1) {
+						fila++;
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+					}
+				}else if(tecla.getKeyCode() == KeyEvent.VK_LEFT) {
+					if(columna>=2) {
+						columna--;
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+					}
+				}else if(tecla.getKeyCode() == KeyEvent.VK_RIGHT) {
+					if(columna<mapa.getColumnas() && columna>=1) {
+						columna++;
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+					}
+				}				
+			}
+		});
 		panelMapa = new JScrollPane(tablaMapa, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		panelMapa.setBounds(10, 39, 674, 320);
 		contentPane.add(panelMapa);
