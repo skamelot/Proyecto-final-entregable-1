@@ -126,7 +126,7 @@ public class MainFrame extends JFrame {
 					        		 switch(columna) {
 					        		 case 0:
 					        			 mapa.setColor((Color) tablaTerrenos.getValueAt(fila, columna), fila);
-					        			 tablaPreview = modeloTablaPreview.coloreaTabla(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID());
+					        			 tablaPreview = modeloTablaPreview.coloreaTabla(mapa.getMapeoID(), mapa.getMapeoID(),  mapa.getColorTerreno(), mapa.getTerrenosID());
 					        			 break;
 					        		 case 1:
 					        			 break;

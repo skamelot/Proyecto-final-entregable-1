@@ -9,10 +9,12 @@ public class ColorCeldaTabla extends DefaultTableCellRenderer {
 	
 	private Color[] color;
 	private String[] terrenoID;
+	private String[][] mapeoID;
 	
-	ColorCeldaTabla(Color[] color, String[] terrenoID){
+	ColorCeldaTabla(Color[] color, String[] terrenoID, String[][] mapeoID){
 		this.color = color;
 		this.terrenoID = terrenoID;
+		this.mapeoID = mapeoID;
 	}
 	
     @Override
@@ -22,10 +24,8 @@ public class ColorCeldaTabla extends DefaultTableCellRenderer {
        super.getTableCellRendererComponent (table, value, isSelected, hasFocus, row, column);
        
        int pos=0;
-       String valorID = table.getValueAt(row, column).toString();
-       //Extrajimos el ID del terreno, ahora lo que sigue es encontrar su color dentro del arreglo
        for(int i=0; i<terrenoID.length; i++)
-    	   if(valorID.equals(terrenoID[i])){
+    	   if(mapeoID[row][column-1].equals(terrenoID[i])){
     		   pos = i;
     		   break;
     	   }

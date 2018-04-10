@@ -21,8 +21,8 @@ public class FrameJuego extends JFrame {
 	private Mapas mapa;
 	private Tablas modeloTabla;
 	private JTable tablaMapa;
-	private String ini;
-	private String fin;
+	private String nombreInicio;
+	private String nombreFin;
 	private JLabel lblInfo;
 	private JTextField txtInicio;
 	private JTextField txtFinal;
@@ -46,7 +46,7 @@ public class FrameJuego extends JFrame {
 	private int finFila;
 	private int finColumna;
 
-	public FrameJuego(String ini, int posIniF, int posIniC, String fin, int posFinF, int posFinC, Mapas propiedades ) {
+	public FrameJuego(String nombreInicio, int posIniF, int posIniC, String nombreFin, int posFinF, int posFinC, Mapas propiedades ) {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,22 +58,20 @@ public class FrameJuego extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		this.ini = ini;
-		this.fin = fin;
+		this.nombreInicio = nombreInicio;
+		this.nombreFin = nombreFin;
 		mapa = propiedades;
-		fila = iniFila;
-		columna = iniColumna;
-		
 		iniFila = posIniF;
 		iniColumna = posIniC-1;
 		finFila = posFinF;
 		finColumna = posFinC-1;
+		fila = iniFila;
+		columna = iniColumna;
 		
 		
 		//Se crea el mapa a mostrar
 		modeloTabla = new Tablas("Juego", mapa.getFilas(), mapa.getColumnas());
 		//Cargamos el mapa primero
-		//tablaMapa = modeloTabla.tablaJuego(iniFila, iniColumna, finFila, finColumna);
 		mapa.setInicio(iniFila, iniColumna);
 		mapa.setFinal(finFila, finColumna);
 		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
@@ -82,26 +80,36 @@ public class FrameJuego extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent tecla) {
 				if(tecla.getKeyCode() == KeyEvent.VK_UP) {
-					if(fila>0 && columna!=1) {
+					if(fila > 0) {
 						fila--;
-						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
-						mapa.actualizaRecorrido(fila, columna-1);
-						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+						mapa.actualizaRecorrido(fila, columna);
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+						txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					}
 				}else if(tecla.getKeyCode() == KeyEvent.VK_DOWN) {
-					if(fila<mapa.getFilas()-1 && columna!=1) {
+					if(fila < mapa.getFilas()-1) {
 						fila++;
-						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+						mapa.actualizaRecorrido(fila, columna);
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+						txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					}
 				}else if(tecla.getKeyCode() == KeyEvent.VK_LEFT) {
-					if(columna>=2) {
+					if(columna > 0) {
 						columna--;
-						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+						mapa.actualizaRecorrido(fila, columna);
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+						txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					}
 				}else if(tecla.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(columna<mapa.getColumnas() && columna>=1) {
+					if(columna < mapa.getColumnas()-1) {
 						columna++;
-						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna]+Tablas.ENCABEZADO_FILAS[fila]);
+						mapa.actualizaRecorrido(fila, columna);
+						txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+						txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+						tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
 					}
 				}				
 			}
@@ -119,7 +127,7 @@ public class FrameJuego extends JFrame {
        	    	String fila = Tablas.ENCABEZADO_FILAS[f], columna = Tablas.ENCABEZADO_COLUMNAS[c];
        	    	int pos = 0;
        	    	for(int i=0; i<mapa.getTerrenosID().length; i++)
-       	    		if(mapa.getTerrenosID()[i].equals(tablaMapa.getValueAt(f, c).toString())){
+       	    		if( mapa.getMapeoID()[f][c-1].equals(mapa.getTerrenosID()[i]) ){
        	    			pos = i;
        	    			break;
        	    		}
@@ -132,7 +140,7 @@ public class FrameJuego extends JFrame {
        	 }
        });
 		
-		txtInicio = new JTextField(this.ini);
+		txtInicio = new JTextField(this.nombreInicio);
 		txtInicio.setBackground(Color.DARK_GRAY);
 		txtInicio.setForeground(Color.WHITE);
 		txtInicio.setHorizontalAlignment(SwingConstants.CENTER);
@@ -141,7 +149,7 @@ public class FrameJuego extends JFrame {
 		contentPane.add(txtInicio);
 		txtInicio.setColumns(10);
 		
-		txtFinal = new JTextField(this.fin);
+		txtFinal = new JTextField(this.nombreFin);
 		txtFinal.setForeground(Color.WHITE);
 		txtFinal.setBackground(Color.DARK_GRAY);
 		txtFinal.setEditable(false);
@@ -150,7 +158,7 @@ public class FrameJuego extends JFrame {
 		contentPane.add(txtFinal);
 		txtFinal.setColumns(10);
 		
-		txtPosActual = new JTextField(this.ini);
+		txtPosActual = new JTextField(this.nombreInicio);
 		txtPosActual.setFont(new Font("Tahoma", Font.BOLD, 11));
 		txtPosActual.setForeground(Color.WHITE);
 		txtPosActual.setBackground(Color.DARK_GRAY);

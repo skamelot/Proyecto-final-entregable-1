@@ -140,7 +140,8 @@ public class Tablas {
 		return tabla;
 	}
 	
-	public JTable coloreaTabla(String[][] mapaVisitas, Color[] color, String[] terrenoID) {
+	
+	public JTable coloreaTabla(String[][] mapeoID, String[][] mapeoRecorrido, Color[] color, String[] terrenoID) {
 		tablaVacia();
 		
 		Object[] data = new Object[columnas];
@@ -149,14 +150,14 @@ public class Tablas {
 				if(c==0)
 					data[c] = ENCABEZADO_FILAS[f];
 				else {
-					data[c] = mapaVisitas[f][c-1];
+					data[c] = mapeoRecorrido[f][c-1];
 				}
 			}
 			modeloTabla.addRow(data);
 		}
 		
 		for(int c=1; c<tabla.getColumnCount(); c++)
-			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID));
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID));
 		
 		return tabla;
 	}
@@ -205,14 +206,14 @@ public class Tablas {
 		}
 		
 		for(int c=1; c<tabla.getColumnCount(); c++)
-			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID));
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID));
 		
 		for(int f=0; f<tabla.getRowCount(); f++) {
 			for(int c=1; c<tabla.getColumnCount(); c++) {
 				if(f==iniF && c==iniC)
-					tabla.setValueAt("I - ", f, c);
+					tabla.setValueAt("I - 1", f, c);
 				else if(f==finF && c==finC)
-					tabla.setValueAt("F - ", f, c);
+					tabla.setValueAt("F", f, c);
 				else
 					tabla.setValueAt("", f, c);
 			}

@@ -33,14 +33,14 @@ public class Mapas {
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
-	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I - "; }
-	public void setFinal(int fila, int columna) { mapaRecorrido[fila][columna] = "F - "; }
+	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I - 1"; }
+	public void setFinal(int fila, int columna) { mapaRecorrido[fila][columna] = "F"; }
 	public void actualizaRecorrido(int fila, int columna) { 
+		visitaActual++;
 		if(mapaRecorrido[fila][columna].isEmpty())
 			mapaRecorrido[fila][columna] = String.valueOf(visitaActual);
 		else
-			mapaRecorrido[fila][columna] = ", "+String.valueOf(visitaActual);
-		visitaActual++;
+			mapaRecorrido[fila][columna] += ", "+String.valueOf(visitaActual);
 	}
 	
 	public void crearMapas(String terrenos) {
