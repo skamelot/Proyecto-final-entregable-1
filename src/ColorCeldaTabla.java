@@ -10,11 +10,13 @@ public class ColorCeldaTabla extends DefaultTableCellRenderer {
 	private Color[] color;
 	private String[] terrenoID;
 	private String[][] mapeoID;
+	private boolean[][] mapaVisible;
 	
-	ColorCeldaTabla(Color[] color, String[] terrenoID, String[][] mapeoID){
+	ColorCeldaTabla(Color[] color, String[] terrenoID, String[][] mapeoID, boolean mapaVisible[][]){
 		this.color = color;
 		this.terrenoID = terrenoID;
 		this.mapeoID = mapeoID;
+		this.mapaVisible = mapaVisible;
 	}
 	
     @Override
@@ -30,7 +32,10 @@ public class ColorCeldaTabla extends DefaultTableCellRenderer {
     		   break;
     	   }
        //Una vez que nos posicionamos en el color, le asignamos el fondo de celda 
-       this.setBackground(color[pos]);
+       if(mapaVisible[row][column-1]==true)//Columna-1 porque esto se basa en toda la tabla y no las variables, es decir, también toma en cuenta la columna vacía(números)
+    	   this.setBackground(color[pos]);
+       else
+    	   this.setBackground(Color.BLACK);
        
        // Retornamos el objeto (celda completa) con solo el fondo de color
        return this;

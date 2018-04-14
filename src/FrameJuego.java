@@ -85,7 +85,9 @@ public class FrameJuego extends JFrame {
 		mapa.setInicio(iniFila, iniColumna);
 		mapa.setFinal(finFila, finColumna);
 		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
-		tablaMapa = modeloTabla.propiedadesJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1);
+		mapa.enmascarar();
+		mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+		tablaMapa = modeloTabla.propiedadesJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1, mapa.getMapaVisible());
 		
 		movimientoHorizontal = modeloTabla.getAnchura();//Obtenemos ancho de celda, es importante porque varía según la cantidad de columnas en el mapa
 		movimientoVertical = modeloTabla.getAltura();//Al igual que la anchura, la altura también es variable
@@ -101,7 +103,7 @@ public class FrameJuego extends JFrame {
 		imgSer = new JLabel();
 		imgSer.setBounds(posX,posY , 20,20);
 		contentPane.add(imgSer);
-		ImageIcon img = new ImageIcon(getClass().getResource("resources/Mexicoball.png"));
+		ImageIcon img = new ImageIcon(getClass().getResource("resources/Mexicobolita.png"));
 		Image img2 = img.getImage();
 		Image img3 = img2.getScaledInstance(imgSer.getWidth(), imgSer.getHeight(), Image.SCALE_SMOOTH);
 		img = new ImageIcon(img3);
@@ -116,7 +118,8 @@ public class FrameJuego extends JFrame {
 							mapa.actualizaRecorrido(fila, columna);
 							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
 							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
 							imgSer.setLocation(imgSer.getX(),imgSer.getY()-movimientoVertical);
 	  	                    repaint();
 						}
@@ -126,7 +129,8 @@ public class FrameJuego extends JFrame {
 							mapa.actualizaRecorrido(fila, columna);
 							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
 							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
 							imgSer.setLocation(imgSer.getX(),imgSer.getY()+movimientoVertical);
 	  	                    repaint();
 						}
@@ -136,7 +140,8 @@ public class FrameJuego extends JFrame {
 							mapa.actualizaRecorrido(fila, columna);
 							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
 							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
 							imgSer.setLocation(imgSer.getX()-movimientoHorizontal,imgSer.getY());
 	  	                    repaint();
 						}
@@ -146,7 +151,8 @@ public class FrameJuego extends JFrame {
 							mapa.actualizaRecorrido(fila, columna);
 							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
 							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID());
+							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
 							imgSer.setLocation(imgSer.getX()+movimientoHorizontal,imgSer.getY());
 	  	                    repaint();
 						}

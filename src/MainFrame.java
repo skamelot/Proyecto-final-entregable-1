@@ -126,7 +126,8 @@ public class MainFrame extends JFrame {
 					        		 switch(columna) {
 					        		 case 0:
 					        			 mapa.setColor((Color) tablaTerrenos.getValueAt(fila, columna), fila);
-					        			 tablaPreview = modeloTablaPreview.coloreaTabla(mapa.getMapeoID(), mapa.getMapeoID(),  mapa.getColorTerreno(), mapa.getTerrenosID());
+					        			 mapa.desenmascarar();
+					        			 tablaPreview = modeloTablaPreview.coloreaTabla(mapa.getMapeoID(), mapa.getMapeoID(),  mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
 					        			 break;
 					        		 case 1:
 					        			 break;
@@ -353,12 +354,14 @@ public class MainFrame extends JFrame {
 				}
 				
 				//Después de haber validado todo, pasamos a la creación de seres
-				FrameSeres fs = new FrameSeres();
+				/*FrameSeres fs = new FrameSeres();
 				boolean siguiente = fs.siguienteFrame();
 				if(siguiente) {
 					FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
 					juego.setVisible(true);
-				}
+				}*/
+				FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
+				juego.setVisible(true);
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);

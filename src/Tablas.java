@@ -162,7 +162,7 @@ public class Tablas {
 	}
 	
 	
-	public JTable coloreaTabla(String[][] mapeoID, String[][] mapeoRecorrido, Color[] color, String[] terrenoID) {
+	public JTable coloreaTabla(String[][] mapeoID, String[][] mapeoRecorrido, Color[] color, String[] terrenoID, boolean[][] mapaVisible) {
 		tablaVacia();
 		
 		Object[] data = new Object[columnas];
@@ -178,12 +178,12 @@ public class Tablas {
 		}
 		
 		for(int c=1; c<tabla.getColumnCount(); c++)
-			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID));
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID, mapaVisible));
 		
 		return tabla;
 	}
 	
-	public JTable propiedadesJuego(String[][] mapeoID, Color[] color, String[] terrenoID, int iniF, int iniC, int finF, int finC) {
+	public JTable propiedadesJuego(String[][] mapeoID, Color[] color, String[] terrenoID, int iniF, int iniC, int finF, int finC, boolean[][] mapaVisible) {
 		tablaVacia();
 		
 		Object[] data = new Object[columnas];
@@ -199,7 +199,7 @@ public class Tablas {
 		}
 		
 		for(int c=1; c<tabla.getColumnCount(); c++)
-			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID));
+			tabla.getColumnModel().getColumn(c).setCellRenderer(new ColorCeldaTabla(color, terrenoID, mapeoID, mapaVisible));
 		
 		for(int f=0; f<tabla.getRowCount(); f++) {
 			for(int c=1; c<tabla.getColumnCount(); c++) {

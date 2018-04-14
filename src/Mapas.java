@@ -9,6 +9,7 @@ public class Mapas {
 	private Color[] colorTerreno;
 	private String[][] mapeoID;
 	private String[][] mapaRecorrido;
+	private boolean[][] mapaVisible;
 	
 	
 	Mapas(int f, int c){
@@ -20,6 +21,7 @@ public class Mapas {
 		terrenosID = null;
 		colorTerreno = null;
 		mapaRecorrido = null;
+		mapaVisible  = null;
 	}
 	
 	public int getFilas() { return filas; }
@@ -30,11 +32,36 @@ public class Mapas {
 	public Color[] getColorTerreno() { return colorTerreno; }
 	public String[][] getMapeoID() { return mapeoID; }
 	public String[][] getMapaRecorrido() { return mapaRecorrido; }
+	public boolean[][] getMapaVisible() { return mapaVisible; }
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
 	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I, 1"; }
 	public void setFinal(int fila, int columna) { mapaRecorrido[fila][columna] = "F"; }
+	public void setMapaVisible(int fila, int columna, int posF, int posC) {
+		mapaVisible[posF][posC] = true;
+		if(posF > 0)//Arriba de la casilla actual
+			mapaVisible[posF-1][posC] = true;
+		if(posF < fila-1)//Abajo de la casilla actual
+			mapaVisible[posF+1][posC] = true;
+		if(posC > 1)//Izquierda de la casilla actual
+			mapaVisible[posF][posC-1] = true;
+		if(posC < columna-1)//Derecha de la casilla actual
+			mapaVisible[posF][posC+1] = true;
+	}
+	
+	public void enmascarar() {
+		for(int f=0; f<filas; f++) 
+			for(int c=0; c<columnas; c++) 
+				mapaVisible[f][c] = false;
+	}
+	
+	public void desenmascarar() {
+		for(int f=0; f<filas; f++) 
+			for(int c=0; c<columnas; c++) 
+				mapaVisible[f][c] = true;
+	}
+	
 	public void actualizaRecorrido(int fila, int columna) { 
 		visitaActual++;
 		if(mapaRecorrido[fila][columna].isEmpty())
@@ -46,6 +73,7 @@ public class Mapas {
 	public void crearMapas(String terrenos) {
 		mapeoID = new String[filas][columnas];
 		mapaRecorrido = new String[filas][columnas];
+		mapaVisible = new boolean[filas][columnas];
 		String []aux = terrenos.split(",");
 		
 		for(int i=0; i<filas; i++)
