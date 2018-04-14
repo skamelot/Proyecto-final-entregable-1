@@ -352,10 +352,13 @@ public class MainFrame extends JFrame {
 					return;
 				}
 				
-				//Después de haber validado todo, lo pasamos al constructor de la siguiente ventana que sería el juego
-				FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
-				
-				juego.setVisible(true);
+				//Después de haber validado todo, pasamos a la creación de seres
+				FrameSeres fs = new FrameSeres();
+				boolean siguiente = fs.siguienteFrame();
+				if(siguiente) {
+					FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
+					juego.setVisible(true);
+				}
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);

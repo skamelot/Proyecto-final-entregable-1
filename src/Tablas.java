@@ -61,6 +61,7 @@ public class Tablas {
 	    
 	    //Manipulación de tamaño para las columnas
 		propiedades(tipoTabla);
+		
 	}//Fin constructor
 	
 	private void propiedades(String tipoTabla) {
@@ -69,10 +70,26 @@ public class Tablas {
 		    tabla.getColumnModel().getColumn(0).setPreferredWidth(120);//Color
 		    tabla.getColumnModel().getColumn(1).setPreferredWidth(222);//Nombre
 		    tabla.getColumnModel().getColumn(2).setPreferredWidth(70);//ID
-	    }else if(tipoTabla.equals("Preview"))
+	    }else if(tipoTabla.equals("Preview")) {
+	    	tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	    	tabla.setRowHeight(180/filas);
-	    else
+	    	tabla.getColumnModel().getColumn(0).setPreferredWidth(20);//cabecera
+			int ancho = 405 / columnas+2;
+			//Ahorita está hardcodeado pero el panel donde se muestra la tabla tiene un ancho de 974 - 20 de la columna vacía = 954/cantidad de columnas
+			for(int i=1; i<tabla.getColumnCount(); i++)
+				tabla.getColumnModel().getColumn(i).setPreferredWidth(ancho);
+	    }
+	    else {
 	    	tabla.setRowHeight(296/filas);
+	    	tabla.getColumnModel().getColumn(0).setPreferredWidth(20);
+			int ancho = 954 / (columnas-1);
+			
+			//Ahorita está hardcodeado pero el panel donde se muestra la tabla tiene un ancho de 974 - 20 de la columna vacía = 954/cantidad de columnas
+			for(int i=1; i<tabla.getColumnCount(); i++) {
+				tabla.getColumnModel().getColumn(i).setPreferredWidth(ancho);
+				tabla.getColumnModel().getColumn(i).setMinWidth(ancho);
+			}
+	    }
 	}
 	
 	private void tablaVacia() {
@@ -116,7 +133,7 @@ public class Tablas {
 		};
 		
 		String[] cabecera = new String[this.columnas];
-		for(int i=0; i<columnas; i++)
+		for(int i=0; i<this.columnas; i++)
 			cabecera[i] = ENCABEZADO_COLUMNAS[i];
 		modeloTabla.setColumnIdentifiers(cabecera);
 		modeloTabla.setRowCount(0);
@@ -135,7 +152,11 @@ public class Tablas {
 			}
 			modeloTabla.addRow(dataID);
 		}
-		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
+		tabla.getColumnModel().getColumn(0).setPreferredWidth(20);//cabecera
+		int ancho = 405 / columnas;
+		//Ahorita está hardcodeado pero el panel donde se muestra la tabla tiene un ancho de 974 - 20 de la columna vacía = 954/cantidad de columnas
+		for(int i=1; i<tabla.getColumnCount(); i++)
+			tabla.getColumnModel().getColumn(i).setPreferredWidth(ancho);
 		tabla.repaint();
 		return tabla;
 	}
@@ -162,34 +183,6 @@ public class Tablas {
 		return tabla;
 	}
 	
-	public JTable tablaJuego(int iniF, int iniC, int finF, int finC ) {
-		tablaVacia();
-		
-		String[] cabecera = new String[this.columnas];
-		for(int i=0; i<columnas; i++)
-			cabecera[i] = ENCABEZADO_COLUMNAS[i];
-		modeloTabla.setColumnIdentifiers(cabecera);
-		
-		String[] dataID = new String[columnas];
-		for(int f=0; f<filas; f++) {
-			for(int c=0; c<columnas; c++) {
-				if(c==0)
-					dataID[c] = ENCABEZADO_FILAS[f];
-				else {
-					if(f==iniF && c==iniC)
-						dataID[c] = "I - ";
-					else if (f==finF && c==finC)
-						dataID[c] = "F - ";
-					else
-						dataID[c] = "";
-				}
-			}
-			modeloTabla.addRow(dataID);
-		}
-		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
-		return tabla;
-	}
-	
 	public JTable propiedadesJuego(String[][] mapeoID, Color[] color, String[] terrenoID, int iniF, int iniC, int finF, int finC) {
 		tablaVacia();
 		
@@ -211,15 +204,25 @@ public class Tablas {
 		for(int f=0; f<tabla.getRowCount(); f++) {
 			for(int c=1; c<tabla.getColumnCount(); c++) {
 				if(f==iniF && c==iniC)
-					tabla.setValueAt("I - 1", f, c);
+					tabla.setValueAt("I, 1", f, c);
 				else if(f==finF && c==finC)
 					tabla.setValueAt("F", f, c);
 				else
 					tabla.setValueAt("", f, c);
 			}
-		}
-		tabla.getColumnModel().getColumn(0).setPreferredWidth(33);//cabecera
+		}		
+		
+		tabla.getColumnModel().getColumn(0).setPreferredWidth(20);
+		tabla.getColumnModel().getColumn(0).setMaxWidth(20);
+		int ancho = 954 / columnas;
+		//Ahorita está hardcodeado pero el panel donde se muestra la tabla tiene un ancho de 974 - 20 de la columna vacía = 954/cantidad de columnas
+		for(int i=1; i<tabla.getColumnCount(); i++)
+			tabla.getColumnModel().getColumn(i).setPreferredWidth(ancho);
 		
 		return tabla;
 	}
+	
+	public int getAltura() { return tabla.getRowHeight(); }
+	public int getAnchura() { return tabla.getColumnModel().getColumn(1).getMinWidth()+1; }
+	public int getAnchuraNum() { return tabla.getColumnModel().getColumn(0).getPreferredWidth(); } 
 }

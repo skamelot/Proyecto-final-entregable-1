@@ -33,7 +33,7 @@ public class Mapas {
 	
 	public void setNombre(String[] nombre) { nombreTerreno = nombre; }
 	public void setColor(Color color, int pos) { colorTerreno[pos] = color; }
-	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I - 1"; }
+	public void setInicio(int fila, int columna) { mapaRecorrido[fila][columna] = "I, 1"; }
 	public void setFinal(int fila, int columna) { mapaRecorrido[fila][columna] = "F"; }
 	public void actualizaRecorrido(int fila, int columna) { 
 		visitaActual++;
