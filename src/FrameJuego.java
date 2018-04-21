@@ -56,7 +56,7 @@ public class FrameJuego extends JFrame {
 	private boolean puedeMover;
 	private JLabel imgSer;
 
-	public FrameJuego(String nombreInicio, int posIniF, int posIniC, String nombreFin, int posFinF, int posFinC, Mapas propiedades ) {
+	public FrameJuego(String nombreInicio, int posIniF, int posIniC, String nombreFin, int posFinF, int posFinC, Mapas propiedades, Seres[]	ser) {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,14 +80,14 @@ public class FrameJuego extends JFrame {
 		puedeMover = true;
 		
 		//Se crea el mapa a mostrar
-		modeloTabla = new Tablas("Juego", mapa.getFilas(), mapa.getColumnas());
+		modeloTabla = new Tablas(Tablas.JUEGO, mapa.getFilas(), mapa.getColumnas());
 		//Cargamos el mapa primero
 		mapa.setInicio(iniFila, iniColumna);
 		mapa.setFinal(finFila, finColumna);
 		//Y después lo coloreamos. Si no cargamos el mapa no muestra nada
 		mapa.enmascarar();
 		mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
-		tablaMapa = modeloTabla.propiedadesJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1, mapa.getMapaVisible());
+		tablaMapa = modeloTabla.tablaJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1, mapa.getMapaVisible());
 		
 		movimientoHorizontal = modeloTabla.getAnchura();//Obtenemos ancho de celda, es importante porque varía según la cantidad de columnas en el mapa
 		movimientoVertical = modeloTabla.getAltura();//Al igual que la anchura, la altura también es variable

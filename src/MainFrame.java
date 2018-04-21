@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 642);
+		setBounds(100, 100, 600, 656);
 		setResizable(false);
 		setLocationRelativeTo(null); //Siempre se abre en el centro de la pantalla independientemente de la resolución
 		
@@ -230,7 +230,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(txtColumnas);
 		txtColumnas.setColumns(10);
 		
-		modeloTablaTerrenos = new Tablas("Terrenos",0,0);
+		modeloTablaTerrenos = new Tablas(Tablas.TERRENOS,0,0);
 		tablaTerrenos = modeloTablaTerrenos.muestraTabla();
 		tablaTerrenos.setEnabled(true);
 		tablaTerrenos.setVisible(false);
@@ -244,7 +244,7 @@ public class MainFrame extends JFrame {
 		lblPreview.setBounds(10, 263, 574, 20);
 		contentPane.add(lblPreview);
 		
-		modeloTablaPreview = new Tablas("Preview", 1, 15);
+		modeloTablaPreview = new Tablas(Tablas.PREVIEW, 1, 15);
 		tablaPreview = modeloTablaPreview.muestraTabla();
 		tablaPreview.setEnabled(false);
 		panelPreview = new JScrollPane(tablaPreview, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -354,14 +354,12 @@ public class MainFrame extends JFrame {
 				}
 				
 				//Después de haber validado todo, pasamos a la creación de seres
-				/*FrameSeres fs = new FrameSeres();
-				boolean siguiente = fs.siguienteFrame();
-				if(siguiente) {
-					FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
+				FrameSeres fs = new FrameSeres(mapa);
+				Seres ser[] = fs.siguienteFrame();
+				if(ser!=null) {
+					FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa, ser);
 					juego.setVisible(true);
-				}*/
-				FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa);
-				juego.setVisible(true);
+				}
 			}
 		});
 		btnContinuar.setBounds(85, 566, 425, 38);

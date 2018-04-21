@@ -106,6 +106,10 @@ public class Mapas {
 					}else if(terrenosID[i].equals(mapeoID[f][c]))
 						break;
 				}
+		String[] tmp = new String[cantTerrenos];
+		for(int i=0; i<cantTerrenos; i++)
+			tmp[i] = terrenosID[i];
+		terrenosID = tmp;
 		
 		colorTerreno = new Color[cantTerrenos];
 		for(int i=0; i<cantTerrenos; i++)
