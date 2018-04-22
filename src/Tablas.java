@@ -54,7 +54,7 @@ public class Tablas {
 			modeloTabla.setColumnIdentifiers(ENCABEZADO_SELECCION);
 		} else if(tipoTabla == SERES) {
 			editables = new boolean[]{
-					false, false, false, true, false, false
+					false, false, false, false, false, false
 	        }; 
 			modeloTabla = new DefaultTableModel() {
 				private static final long serialVersionUID = 1L;

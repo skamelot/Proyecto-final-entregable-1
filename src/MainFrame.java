@@ -11,6 +11,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -88,9 +89,10 @@ public class MainFrame extends JFrame {
 		        	//selector tiene opciones útiles para manipular con getSelectedFile
 		            txtRutaMapa.setText(selector.getSelectedFile().getPath());
 		            Archivos arch = new Archivos();
+		            
 		            try {
 						if( arch.leerArchivo(selector.getSelectedFile().getPath())  ) {
-							
+							arch.eliminarArbol(new File("Arbol"));
 							//Lectura de archivo y creación del contenido del mapa
 							mapa = new Mapas(arch.getFilas(), arch.getColumnas());
 							mapa.crearMapas(arch.getTerrenos());
@@ -358,6 +360,7 @@ public class MainFrame extends JFrame {
 				Seres ser[] = fs.siguienteFrame();
 				if(ser!=null) {
 					FrameJuego juego = new FrameJuego(txtInicio.getText(), iniF, iniC,txtFinal.getText(), finF, finC, mapa, ser);
+					setVisible(false);
 					juego.setVisible(true);
 				}
 			}

@@ -1,3 +1,4 @@
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -136,5 +137,94 @@ public class Archivos
 			}
 		}
 		return true;
+	}
+	
+	public void generarArbol(Listas arbol, boolean repetir, String[][] recorrido) {
+		String ruta = "Arbol";
+		String hijo = "";
+		File carpeta = new File(ruta);
+		eliminarArbol(carpeta);
+		carpeta = new File(ruta);
+		carpeta.mkdir();
+		Nodos auxiliar = arbol.getCabeza();
+		
+		while(auxiliar!=null) {
+			ruta += "/" + auxiliar.getNombre() + " - " + auxiliar.getVisita();
+			carpeta = new File(ruta);
+			carpeta.mkdirs();
+			for(int h=0; h<auxiliar.getHijos().length; h++) {
+				if(!auxiliar.getHijos()[h].equals("")) {
+					if(repetir) {
+						hijo = ruta + "/" + auxiliar.getHijos()[h];
+						carpeta = new File(hijo);
+						carpeta.mkdir();
+					}else {
+						Nodos tmp = arbol.getCabeza();
+						boolean unico = true;
+						while(unico) {
+							if(tmp.getNombre().equals(auxiliar.getHijos()[h]))
+								unico = false;
+							tmp = tmp.getSiguiente();
+							if(tmp==null)
+								break;
+						}
+						if(unico) {
+							hijo = ruta + "/" + auxiliar.getHijos()[h];
+							carpeta = new File(hijo);
+							carpeta.mkdir();
+						}
+					}
+				}
+			}
+			auxiliar = auxiliar.getSiguiente();
+			
+			if(auxiliar!=null) {
+				if(repetir) {
+					String nombre = auxiliar.getNombre();
+					carpeta = new File(ruta+"/"+nombre);
+					if(carpeta.exists())
+						carpeta.delete();
+				}else {
+					Nodos tmp = arbol.getCabeza();
+					ruta = "Arbol/"+ tmp.getNombre() + " - " + tmp.getVisita();
+					while(!auxiliar.getPadre().equals(tmp.getNombre())) {
+						tmp = tmp.getSiguiente();
+						if(tmp==null)
+							break;
+						else
+							ruta += "/"+ tmp.getNombre() + " - " + tmp.getVisita();
+					}
+					carpeta = new File(ruta + "/" + auxiliar.getNombre());
+					if(carpeta.exists())
+						carpeta.delete();
+				}
+			}
+		}
+			
+	}
+
+	public void eliminarArbol(File carpeta) {
+		if(carpeta.exists()) {
+			File[] subCarpetas = carpeta.listFiles();
+
+		    for (File carpetaActual: subCarpetas) {
+		        if (carpetaActual.isDirectory()) {  
+		            eliminarArbol(carpetaActual);
+		        } 
+		        carpetaActual.delete();
+		    }
+		}
+	}
+	
+	public void abrirCarpeta() {
+		File foler = new File("Arbol"); // path to the directory to be opened
+        Desktop desktop = null;
+        if (Desktop.isDesktopSupported()) {
+        	desktop = Desktop.getDesktop();
+        }
+
+        try {
+        	desktop.open(foler);
+        } catch (IOException e) {  }
 	}
 }//Fin de clase

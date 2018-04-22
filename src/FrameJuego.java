@@ -2,6 +2,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Image;
 
@@ -20,6 +22,9 @@ import java.awt.event.KeyEvent;
 
 public class FrameJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private static final int SERUNO = 0;
+	private static final int SERDOS = 1;
+	private static final int SERTRES = 2;
 	private JPanel contentPane;
 	private Mapas mapa;
 	private Tablas modeloTabla;
@@ -50,24 +55,35 @@ public class FrameJuego extends JFrame {
 	private int finColumna;
 	private int posX;
 	private int posY;
+	private int origenX;
+	private int origenY;
 	private int movimientoHorizontal;
 	private int movimientoVertical;
-	
+	private int serSeleccionado;
 	private boolean puedeMover;
+	private boolean repetir;
 	private JLabel imgSer;
+	private JButton btnCambiarSer;
+	
+	private Listas arbol;
+	private String nombre;
+	private String padre;
+	private String[] hijos;
+	private JButton btnGenerar;
+	private Seres[]	ser;
 
-	public FrameJuego(String nombreInicio, int posIniF, int posIniC, String nombreFin, int posFinF, int posFinC, Mapas propiedades, Seres[]	ser) {
+	public FrameJuego(String nombreInicio, int posIniF, int posIniC, String nombreFin, int posFinF, int posFinC, Mapas propiedades, Seres[]	s) {
 		setTitle("Proyecto 1 - Elementos b\u00E1sicos para mapa");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 580);
+		setBounds(100, 100, 1000, 593);
 		setLocationRelativeTo(null); //Siempre se abre en el centro de la pantalla independientemente de la resolución
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+		ser = s;
 		this.nombreInicio = nombreInicio;
 		this.nombreFin = nombreFin;
 		mapa = propiedades;
@@ -100,66 +116,82 @@ public class FrameJuego extends JFrame {
 		 * Y lo mismo con la fila, la multiplicamos por la cantidad de filas en las que está +1 porque en caso de que el inicio esté en la fila 0 todo se echa a perder
 		*/
 		posY = (39 + movimientoVertical) + (iniFila * movimientoVertical);
+		origenX = posX;
+		origenY = posY;
 		imgSer = new JLabel();
-		imgSer.setBounds(posX,posY , 20,20);
+		imgSer.setBounds(origenX,origenY , 20,20);
 		contentPane.add(imgSer);
-		ImageIcon img = new ImageIcon(getClass().getResource("resources/Mexicobolita.png"));
-		Image img2 = img.getImage();
-		Image img3 = img2.getScaledInstance(imgSer.getWidth(), imgSer.getHeight(), Image.SCALE_SMOOTH);
-		img = new ImageIcon(img3);
-		imgSer.setIcon(img);
+		
 		tablaMapa.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent tecla) {
 				if(puedeMover) {
 					if(tecla.getKeyCode() == KeyEvent.VK_UP) {
 						if(fila > 0) {
-							fila--;
-							mapa.actualizaRecorrido(fila, columna);
-							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
-							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
-							imgSer.setLocation(imgSer.getX(),imgSer.getY()-movimientoVertical);
-	  	                    repaint();
+							if(ser[serSeleccionado].getCostos()[fila-1][columna]!=-1) {
+								fila--;
+								mapa.actualizaRecorrido(fila, columna);
+								txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+								txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+								mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+								tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
+								imgSer.setLocation(imgSer.getX(),imgSer.getY()-movimientoVertical);
+		  	                    repaint();
+		  	                    arbol.insertarNodo(repetir, nuevoNodo());
+							}
 						}
 					}else if(tecla.getKeyCode() == KeyEvent.VK_DOWN) {
 						if(fila < mapa.getFilas()-1) {
-							fila++;
-							mapa.actualizaRecorrido(fila, columna);
-							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
-							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
-							imgSer.setLocation(imgSer.getX(),imgSer.getY()+movimientoVertical);
-	  	                    repaint();
+							if(ser[serSeleccionado].getCostos()[fila+1][columna] != -1) {
+								fila++;
+								mapa.actualizaRecorrido(fila, columna);
+								txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+								txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+								mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+								tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
+								imgSer.setLocation(imgSer.getX(),imgSer.getY()+movimientoVertical);
+		  	                    repaint();
+		  	                    arbol.insertarNodo(repetir, nuevoNodo());
+							}
 						}
 					}else if(tecla.getKeyCode() == KeyEvent.VK_LEFT) {
 						if(columna > 0) {
-							columna--;
-							mapa.actualizaRecorrido(fila, columna);
-							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
-							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
-							imgSer.setLocation(imgSer.getX()-movimientoHorizontal,imgSer.getY());
-	  	                    repaint();
+							if(ser[serSeleccionado].getCostos()[fila][columna-1] != -1) {
+								columna--;
+								mapa.actualizaRecorrido(fila, columna);
+								txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+								txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+								mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+								tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
+								imgSer.setLocation(imgSer.getX()-movimientoHorizontal,imgSer.getY());
+		  	                    repaint();
+		  	                    arbol.insertarNodo(repetir, nuevoNodo());
+							}
 						}
 					}else if(tecla.getKeyCode() == KeyEvent.VK_RIGHT) {
 						if(columna < mapa.getColumnas()-1) {
-							columna++;
-							mapa.actualizaRecorrido(fila, columna);
-							txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
-							txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
-							mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
-							tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
-							imgSer.setLocation(imgSer.getX()+movimientoHorizontal,imgSer.getY());
-	  	                    repaint();
+							if(ser[serSeleccionado].getCostos()[fila][columna+1] != -1) {
+								columna++;
+								mapa.actualizaRecorrido(fila, columna);
+								txtPosActual.setText(Tablas.ENCABEZADO_COLUMNAS[columna+1]+Tablas.ENCABEZADO_FILAS[fila]);
+								txtVisita.setText(String.valueOf(mapa.getVisitaActual()));
+								mapa.setMapaVisible(propiedades.getFilas(), propiedades.getColumnas(), fila, columna);
+								tablaMapa = modeloTabla.coloreaTabla(mapa.getMapeoID(), mapa.getMapaRecorrido(), mapa.getColorTerreno(), mapa.getTerrenosID(), mapa.getMapaVisible());
+								imgSer.setLocation(imgSer.getX()+movimientoHorizontal,imgSer.getY());
+		  	                    repaint();
+		  	                    arbol.insertarNodo(repetir, nuevoNodo());
+							}
 						}
 					}	
 						
-					if(txtPosActual.getText().equals(txtFinal.getText()))
+					if(txtPosActual.getText().equals(txtFinal.getText())) {
 						puedeMover = false;
+						btnCambiarSer.setEnabled(false);
+						JOptionPane.showMessageDialog(getRootPane(),"Ha llegado al final, gracias por participar.","",JOptionPane.INFORMATION_MESSAGE);
+						Archivos arch = new Archivos();
+						arch.generarArbol(arbol, repetir, mapa.getMapaRecorrido());
+						arch.abrirCarpeta();
+					}
 				}
 			}
 		});
@@ -289,9 +321,136 @@ public class FrameJuego extends JFrame {
 				nuevo.setVisible(true);
 			}
 		});
-		btnNuevo.setBounds(378, 522, 237, 23);
+		btnNuevo.setBounds(597, 524, 237, 23);
 		contentPane.add(btnNuevo);
 		
+		btnCambiarSer = new JButton("Cambiar ser");
+		btnCambiarSer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrameSeleccionarSer fss = new FrameSeleccionarSer(ser, serSeleccionado);
+				String seleccion = fss.elegirSer();
+				if(!seleccion.isEmpty() || !seleccion.equals("")) {
+					cargaImagen(seleccion);
+					reiniciar();
+				}
+			}
+		});
 		
+		btnGenerar = new JButton("Generar \u00E1rbol");
+		btnGenerar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(arbol.getCabeza()!=null) {
+					Archivos arch = new Archivos();
+					arch.generarArbol(arbol, repetir, mapa.getMapaRecorrido());
+					arch.abrirCarpeta();
+				}
+			}
+		});
+		btnGenerar.setBounds(160, 524, 236, 25);
+		contentPane.add(btnGenerar);
+		btnCambiarSer.setFont(new Font("Arial", Font.PLAIN, 12));
+		btnCambiarSer.setBounds(856, 9, 126, 25);
+		contentPane.add(btnCambiarSer);
+		
+		int repite = JOptionPane.showConfirmDialog(getRootPane(), "¿Desea repetir nodos en el árbol?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	    if (repite == JOptionPane.YES_OPTION) 
+	    	repetir = true;
+	    else
+	    	repetir = false;
+	    
+	    if(ser[SERUNO] != null && ser[SERUNO].getCostos()[iniFila][iniColumna] != -1) {
+	    	serSeleccionado = SERUNO;
+			cargaImagen(ser[serSeleccionado].getRutaImg());
+	    }else if(ser[SERDOS] != null && ser[SERDOS].getCostos()[iniFila][iniColumna] != -1) {
+	    	serSeleccionado = SERDOS;
+			cargaImagen(ser[serSeleccionado].getRutaImg());
+    	}else if(ser[SERTRES] != null && ser[SERTRES].getCostos()[iniFila][iniColumna] != -1) {
+    		serSeleccionado = SERTRES;
+			cargaImagen(ser[serSeleccionado].getRutaImg());
+    	}else {
+    		JOptionPane.showMessageDialog(getRootPane(),"Los seres no pueden ser colocados en la casilla inicial.\n"
+    												  + "Por favor vuelva a intentarlo seleccionando ''Cargar nuevo mapa''.","",JOptionPane.WARNING_MESSAGE);
+    		puedeMover = false;
+    		btnGenerar.setEnabled(false);
+    		btnCambiarSer.setEnabled(false);
+    	}
+	    
+	    if(puedeMover) {
+	    	arbol = new Listas();
+	    	arbol.insertarNodo(repetir, nuevoNodo());
+	    }
+	}
+	
+	private void cargaImagen(String ruta) {
+		ImageIcon img = new ImageIcon(getClass().getResource(ruta));
+		Image img2 = img.getImage();
+		Image img3 = img2.getScaledInstance(imgSer.getWidth(), imgSer.getHeight(), Image.SCALE_SMOOTH);
+		img = new ImageIcon(img3);
+		imgSer.setIcon(img);
+		posX = origenX;
+		posY = origenY;
+		imgSer.setLocation(origenX, origenY);
+	}
+	
+	private void reiniciar() {
+		fila = iniFila;
+		columna = iniColumna;
+		txtVisita.setText("1");
+		txtPosActual.setText(nombreInicio);
+		mapa.reinicia(iniFila, iniColumna, finFila, finColumna);
+		mapa.setMapaVisible(mapa.getFilas(), mapa.getColumnas(), fila, columna);
+		tablaMapa = modeloTabla.tablaJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1, mapa.getMapaVisible());
+		arbol = new Listas();
+	}
+	
+	private Nodos nuevoNodo() {
+		int c = columna + 1;
+		int f = fila;
+		nombre = Tablas.ENCABEZADO_COLUMNAS[c] + Tablas.ENCABEZADO_FILAS[f];
+		//Orden de expansión: abajo, izquierda, arriba, derecha
+		hijos = new String[4];
+		if(fila < mapa.getFilas()-1 && ser[serSeleccionado].getCostos()[fila+1][columna] != (double)-1) {//abajo
+			hijos[0] = Tablas.ENCABEZADO_COLUMNAS[c] + Tablas.ENCABEZADO_FILAS[f+1];
+		}else
+			hijos[0] = "";
+		if(columna >= 1 && ser[serSeleccionado].getCostos()[fila][columna-1] != (double)-1) {//izquierda
+			hijos[1] = Tablas.ENCABEZADO_COLUMNAS[c-1] + Tablas.ENCABEZADO_FILAS[f];
+		}else
+			hijos[1] = "";
+		if(fila >= 1 && ser[serSeleccionado].getCostos()[fila-1][columna] != (double)-1) {//arriba
+			hijos[2] = Tablas.ENCABEZADO_COLUMNAS[c] + Tablas.ENCABEZADO_FILAS[f-1];
+		}else
+			hijos[2] = "";
+		if(columna < mapa.getColumnas()-1 && ser[serSeleccionado].getCostos()[fila][columna+1] != (double)-1) {//derecha
+			hijos[3] = Tablas.ENCABEZADO_COLUMNAS[c+1] + Tablas.ENCABEZADO_FILAS[f];
+		}else
+			hijos[3] = "";
+		padre = "";
+		Nodos nodo = new Nodos(fila, columna, nombre, padre, hijos, mapa.getMapaRecorrido()[fila][columna]);
+		
+		if(!repetir && arbol.getCabeza()!=null) {
+			boolean huerfano = true;
+			Nodos tmp = arbol.getCabeza();
+			while(huerfano) {
+				if(tmp.getNombre().equals(nombre)) {
+					padre = tmp.getPadre();
+					nodo.setPadre(padre);
+					huerfano = false;
+				}else {
+					String[] hijo = tmp.getHijos();
+					for(int h = 0; h<hijo.length; h++) {
+						if(!hijo[h].equals("") && tmp.getHijos()[h].equals(nodo.getNombre())) {
+							padre = tmp.getNombre();
+							nodo.setPadre(padre);
+							huerfano = false;
+						}
+					}
+				}
+				tmp = tmp.getSiguiente();
+				if(tmp==null)
+					break;
+			}
+		}
+		return nodo;
 	}
 }

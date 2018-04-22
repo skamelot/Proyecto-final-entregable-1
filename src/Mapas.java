@@ -44,7 +44,7 @@ public class Mapas {
 			mapaVisible[posF-1][posC] = true;
 		if(posF < fila-1)//Abajo de la casilla actual
 			mapaVisible[posF+1][posC] = true;
-		if(posC > 1)//Izquierda de la casilla actual
+		if(posC >= 1)//Izquierda de la casilla actual
 			mapaVisible[posF][posC-1] = true;
 		if(posC < columna-1)//Derecha de la casilla actual
 			mapaVisible[posF][posC+1] = true;
@@ -116,5 +116,19 @@ public class Mapas {
 			colorTerreno[i] = Color.WHITE;
 	}
 	
-	
+	public void reinicia(int iniF, int iniC, int finF, int finC) {
+		visitaActual = 1;
+		for(int f=0; f<filas; f++) {
+			for(int c=0; c<columnas; c++) {
+				if(f == iniF && c == iniC)
+					mapaRecorrido[f][c] = "I, 1";
+				else if(f == finF && c == finC)
+					mapaRecorrido[f][c] = "F";
+				else
+					mapaRecorrido[f][c] = "";
+			}
+		}
+		enmascarar();
+		visitaActual = 1;
+	}
 }
