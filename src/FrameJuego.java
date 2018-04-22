@@ -401,6 +401,7 @@ public class FrameJuego extends JFrame {
 		mapa.setMapaVisible(mapa.getFilas(), mapa.getColumnas(), fila, columna);
 		tablaMapa = modeloTabla.tablaJuego(mapa.getMapeoID(), mapa.getColorTerreno(), mapa.getTerrenosID(), iniFila, iniColumna+1, finFila, finColumna+1, mapa.getMapaVisible());
 		arbol = new Listas();
+		arbol.insertarNodo(repetir, nuevoNodo());
 	}
 	
 	private Nodos nuevoNodo() {
